@@ -11,7 +11,7 @@ author: 张耳朵
 language: zh-Hans
 timezone:
 #侧边栏头像设置
-avatar: /images/user.jpg
+avatar: /images/avatar.jpeg
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
