@@ -1,38 +1,17 @@
 ---
 title: Hello World
 ---
-Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
+学了这么久前端终于想要开始搞一个自己的博客站了
+其实也不全是想在这里更新读书笔记吧
+还是想作为一个只有我知道的秘密基地（虽然有点难，但是毕竟github上我也是个小透明哈哈哈哈没人关注的）
 
-## Quick Start
+所以我可能会在这里
+- 追星
+- 写小日记
+- 在这里表达我自己
 
-### Create a new post
+当然，当下最重要的是：
+赶紧看面经啊你个小辣鸡
 
-``` bash
-$ hexo new "My New Post"
-```
-
-More info: [Writing](https://hexo.io/docs/writing.html)
-
-### Run server
-
-``` bash
-$ hexo server
-```
-
-More info: [Server](https://hexo.io/docs/server.html)
-
-### Generate static files
-
-``` bash
-$ hexo generate
-```
-
-More info: [Generating](https://hexo.io/docs/generating.html)
-
-### Deploy to remote sites
-
-``` bash
-$ hexo deploy
-```
-
-More info: [Deployment](https://hexo.io/docs/deployment.html)
+[ps] 我可能是博客换头像换的最勤的了吧哈哈哈哈（毕竟小华辣么好看kikiki
+在这里我可以肆无忌惮地换头像，开心！
