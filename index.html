@@ -342,89 +342,17 @@
       
         
           
-            <p>写React代码时，我们经常会在遍历列表节点的时候给每个列表项添加一个key属性，总是说它可以加快节点更新，那么具体是怎么更新，又是如何加快的呢？</p>
-<h3 id="React-更新节点的过程"><a href="#React-更新节点的过程" class="headerlink" title="React 更新节点的过程"></a>React 更新节点的过程</h3><p>React是通过更新其内部数据，驱动视图进行相应更新的一种模式，我们只需要关注想要关注的数据并对其进行操作。</p>
-<p>但是想要反映到真实html上的话，这一过程必定会涉及 js 操作dom进行更新，我们都知道js操作dom是很耗费资源的一件事情，而React的虚拟DOM 和 diff算法就是为了加快这一过程而提出的核心思想。</p>
-<p>js操作dom很耗费资源，而js操作js对象是很快的，React的虚拟DOM，说白了就是用javascript构造的一种dom树结构，用js来表达最终想要渲染的dom树结构，当每次数据更新发生时，React会根据render方法的内容先生成一个js的树结构，并把这个新生成的js树跟旧的js树进行比对，记录有区别的节点，最终每次只更新这些有区别的节点</p>
-<p>React 虚拟DOM节点其实就是一个js对象，React有一个顶层方法叫 React.createElement，我理解这个方法就是生成一个可以代表一个dom节点的js对象，我们常常在写react时会写这样的代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> node = (&lt;div class="item"&gt;hhh&lt;/div&gt;)</span><br></pre></td></tr></table></figure>
-
-<p>其实这并不是合格的js代码，而是一种成为 jsx 的板式代码，react会在读到这样的代码时，使用React.createElement 代替它，生成对应的js代码，相当于</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> node = &#123;</span><br><span class="line">  tag: <span class="string">"div"</span>,</span><br><span class="line">  attrs: &#123;</span><br><span class="line">    class: "item"</span><br><span class="line">  &#125;,</span><br><span class="line">  children: [&#123;</span><br><span class="line">    <span class="string">'hhh'</span> <span class="comment">// 也可以是一个跟node类似的(有tag、attrs、children的对象)</span></span><br><span class="line">  &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>所以，虚拟DOM树最终就是这样的一个很大的js对象</p>
-<p>但是，就算是一个简单的js对象表示的树结构，如果想比较两棵树是否完全相同的话，可以进行深度优先或广度优先遍历，不管是哪种，如果树结构很复杂或者树很深的话，即使是js对象，也会占用很长时间来进行比对</p>
-<p>React又是如何快速比对两个很大的js对象是否相同的呢</p>
-<h3 id="React-diff"><a href="#React-diff" class="headerlink" title="React diff"></a>React diff</h3><p>不能完全说React是在比对两个js对象是否完全相同，React想要比对的是两个代表dom树的js对象，而这样的对象又有一些特点，所以react 的diff算法是基于以下几个假设的</p>
-<ol>
-<li>Web UI中跨层级的节点操作很少，可以忽略</li>
-<li>拥有相同类的两个组件会生成类似的树结构，而拥有不同类的两个组件会生成不同的树结构</li>
-<li>对于同一层级的子节点，可以通过id进行唯一区分</li>
-</ol>
-<p>基于这三个策略，react分别对 tree diff、component diff 和 element diff进行了算法优化</p>
-<h4 id="tree-diff"><a href="#tree-diff" class="headerlink" title="tree diff"></a>tree diff</h4><p>忽略跨层级的节点移动，只比较同层节点，即，对树进行分层比较。</p>
-<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5ej4cz4ntj20g608c0tp.jpg" alt></p>
-<p>React 只对相同颜色的node节点进行比较，如果在某一层，发现新旧dom树的某个节点不一样了，那么不管它们的子树是否相同，react都会对其进行替换（或删除，这里的具体策略下文再讲）</p>
-<p>那么，如果dom树真的进行了跨层级的移动，React会怎样比对节点树呢？</p>
-<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5ej84sbtsj20es08laao.jpg" alt></p>
-<p>如图，旧的DOM树中A子树是R的左节点，而在新的DOM树中这个子树被移动到了D子树的下一层级。</p>
-<p>这种情况，React会在比对R的左节点时，发现新的DOM树中没有这个节点，React会把这个子树整个删除，再按顺序进行D的比对，D比对完成后发现新的DOM树还有下一层，那么再进行下一层遍历，由于旧子树中D没有左节点，React会直接创建一个新的A节点并添加到D的左子树上去</p>
-<p>【建议】在React开发中，保持稳定的DOM树结构有利于性能的提升</p>
-<h4 id="component-diff"><a href="#component-diff" class="headerlink" title="component diff"></a>component diff</h4><p>React是基于组件构建应用的，对于组件的比较</p>
-<ul>
-<li>对于同类型的组件，使用原策略进行比对</li>
-<li>对于不同类型的组件，不管新旧组件的子树结构是否相同，都会直接删除旧的节点树，并创建新的节点树（替换其所有子节点）</li>
-<li>对于同类型的组件，可能virtual dom 没有任何变化，如果能够确切的知道这点那可以节省大量的 diff 运算时间，因此 React 允许用户通过shouldComponentUpdate() 来判断该组件是否需要进行 diff。</li>
-</ul>
-<h4 id="element-diff-和-key"><a href="#element-diff-和-key" class="headerlink" title="element diff 和 key"></a>element diff 和 key</h4><p>同一层级节点的比较有 新增、移动和删除 三种操作</p>
-<p>没有用key的时候，React只会简单的比较同一个未知的元素是否相同</p>
-<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5ejmisds7j20e507f3zg.jpg" alt></p>
-<p>对于这个过程，虽然只是相邻元素交换位置，但是React只会比对相同位置的元素，它会认为每个元素都是不同的，所以每次比对都会删除旧节点，创建新节点，这个过程很浪费，所以React提供了key的策略来让我们手动标识，这两个元素是相同的</p>
-<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5ejop7yclj20ef08i3zp.jpg" alt></p>
-<p>首先对新集合的节点进行循环遍历，for (name in nextChildren)，通过唯一 key 可以判断新老集合中是否存在相同的节点，if (prevChild === nextChild)，如果存在相同节点，则进行移动操作，但在移动前需要将当前节点在老集合中的位置与 lastIndex 进行比较，if (child._mountIndex &lt; lastIndex)，则进行节点移动操作，否则不执行该操作。这是一种<font color="red">顺序优化</font>手段，lastIndex 一直在更新，表示访问过的节点在老集合中最右的位置（即最大的位置），<strong>如果新集合中当前访问的节点比 lastIndex 大，说明当前访问节点在老集合中就比上一个节点位置靠后，则该节点不会影响其他节点的位置，因此不用添加到差异队列中，即不执行移动操作，只有当访问的节点比 lastIndex 小时，才需要进行移动操作</strong>。</p>
-<p>以上图为例，可以更为清晰直观的描述 diff 的差异对比过程：</p>
-<ul>
-<li>从新集合中取得 B，判断老集合中存在相同节点 B，通过对比节点位置判断是否进行移动操作，B 在老集合中的位置 B._mountIndex = 1，此时 lastIndex = 0，不满足 child._mountIndex &lt; lastIndex 的条件，因此不对 B 进行移动操作；更新 lastIndex = Math.max(prevChild._mountIndex, lastIndex)，其中 prevChild._mountIndex 表示 B 在老集合中的位置，则 lastIndex ＝ 1，并将 B 的位置更新为新集合中的位置prevChild._mountIndex = nextIndex，此时新集合中 B._mountIndex = 0，nextIndex++ 进入下一个节点的判断。</li>
-<li>从新集合中取得 A，判断老集合中存在相同节点 A，通过对比节点位置判断是否进行移动操作，A 在老集合中的位置 A._mountIndex = 0，此时 lastIndex = 1，满足 child._mountIndex &lt; lastIndex的条件，因此对 A 进行移动操作enqueueMove(this, child._mountIndex, toIndex)，其中 toIndex 其实就是 nextIndex，表示 A 需要移动到的位置；更新 lastIndex = Math.max(prevChild._mountIndex, lastIndex)，则 lastIndex ＝ 1，并将 A 的位置更新为新集合中的位置 prevChild._mountIndex = nextIndex，此时新集合中A._mountIndex = 1，nextIndex++ 进入下一个节点的判断。</li>
-<li>从新集合中取得 D，判断老集合中存在相同节点 D，通过对比节点位置判断是否进行移动操作，D 在老集合中的位置 D._mountIndex = 3，此时 lastIndex = 1，不满足 child._mountIndex &lt; lastIndex的条件，因此不对 D 进行移动操作；更新 lastIndex = Math.max(prevChild._mountIndex, lastIndex)，则 lastIndex ＝ 3，并将 D 的位置更新为新集合中的位置 prevChild._mountIndex = nextIndex，此时新集合中D._mountIndex = 2，nextIndex++ 进入下一个节点的判断。</li>
-<li>从新集合中取得 C，判断老集合中存在相同节点 C，通过对比节点位置判断是否进行移动操作，C 在老集合中的位置 C._mountIndex = 2，此时 lastIndex = 3，满足 child._mountIndex &lt; lastIndex 的条件，因此对 C 进行移动操作 enqueueMove(this, child._mountIndex, toIndex)；更新 lastIndex = Math.max(prevChild._mountIndex, lastIndex)，则 lastIndex ＝ 3，并将 C 的位置更新为新集合中的位置 prevChild._mountIndex = nextIndex，此时新集合中 C._mountIndex = 3，nextIndex++ 进入下一个节点的判断，由于 C 已经是最后一个节点，因此 diff 到此完成</li>
-</ul>
-<p>···</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">_updateChildren: <span class="function"><span class="keyword">function</span>(<span class="params">nextNestedChildrenElements, transaction, context</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> prevChildren = <span class="keyword">this</span>._renderedChildren;</span><br><span class="line">  <span class="keyword">var</span> nextChildren = <span class="keyword">this</span>._reconcilerUpdateChildren(</span><br><span class="line">    prevChildren, nextNestedChildrenElements, transaction, context</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">if</span> (!nextChildren &amp;&amp; !prevChildren) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> name;</span><br><span class="line">  <span class="keyword">var</span> lastIndex = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> nextIndex = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (name <span class="keyword">in</span> nextChildren) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!nextChildren.hasOwnProperty(name)) &#123;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> prevChild = prevChildren &amp;&amp; prevChildren[name];</span><br><span class="line">    <span class="keyword">var</span> nextChild = nextChildren[name];</span><br><span class="line">    <span class="keyword">if</span> (prevChild === nextChild) &#123;</span><br><span class="line">      <span class="comment">// 移动节点</span></span><br><span class="line">      <span class="keyword">this</span>.moveChild(prevChild, nextIndex, lastIndex);</span><br><span class="line">      lastIndex = <span class="built_in">Math</span>.max(prevChild._mountIndex, lastIndex);</span><br><span class="line">      prevChild._mountIndex = nextIndex;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (prevChild) &#123;</span><br><span class="line">        lastIndex = <span class="built_in">Math</span>.max(prevChild._mountIndex, lastIndex);</span><br><span class="line">        <span class="comment">// 删除节点</span></span><br><span class="line">        <span class="keyword">this</span>._unmountChild(prevChild);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 初始化并创建节点</span></span><br><span class="line">      <span class="keyword">this</span>._mountChildAtIndex(</span><br><span class="line">        nextChild, nextIndex, transaction, context</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">    nextIndex++;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (name <span class="keyword">in</span> prevChildren) &#123;</span><br><span class="line">    <span class="keyword">if</span> (prevChildren.hasOwnProperty(name) &amp;&amp;</span><br><span class="line">        !(nextChildren &amp;&amp; nextChildren.hasOwnProperty(name))) &#123;</span><br><span class="line">      <span class="keyword">this</span>._unmountChild(prevChildren[name]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>._renderedChildren = nextChildren;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">// 移动节点</span></span><br><span class="line">moveChild: <span class="function"><span class="keyword">function</span>(<span class="params">child, toIndex, lastIndex</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (child._mountIndex &lt; lastIndex) &#123;</span><br><span class="line">    <span class="keyword">this</span>.prepareToManageChildren();</span><br><span class="line">    enqueueMove(<span class="keyword">this</span>, child._mountIndex, toIndex);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">// 创建节点</span></span><br><span class="line">createChild: <span class="function"><span class="keyword">function</span>(<span class="params">child, mountImage</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.prepareToManageChildren();</span><br><span class="line">  enqueueInsertMarkup(<span class="keyword">this</span>, mountImage, child._mountIndex);</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">// 删除节点</span></span><br><span class="line">removeChild: <span class="function"><span class="keyword">function</span>(<span class="params">child</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.prepareToManageChildren();</span><br><span class="line">  enqueueRemove(<span class="keyword">this</span>, child._mountIndex);</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">_unmountChild: <span class="function"><span class="keyword">function</span>(<span class="params">child</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.removeChild(child);</span><br><span class="line">  child._mountIndex = <span class="literal">null</span>;</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">_mountChildAtIndex: <span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  child,</span></span></span><br><span class="line"><span class="function"><span class="params">  index,</span></span></span><br><span class="line"><span class="function"><span class="params">  transaction,</span></span></span><br><span class="line"><span class="function"><span class="params">  context</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> mountImage = ReactReconciler.mountComponent(</span><br><span class="line">    child,</span><br><span class="line">    transaction,</span><br><span class="line">    <span class="keyword">this</span>,</span><br><span class="line">    <span class="keyword">this</span>._nativeContainerInfo,</span><br><span class="line">    context</span><br><span class="line">  );</span><br><span class="line">  child._mountIndex = index;</span><br><span class="line">  <span class="keyword">this</span>.createChild(child, mountImage);</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>这种比对策略其实还是有一些缺陷的，比如，如果我们只是把列表的最后一个元素移动到列表开头，那么React在比较时，</p>
-<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5ejtpvr2xj20f208gdh6.jpg" alt></p>
-<p>理论上 diff 应该只需对 D 执行移动操作，然而由于 D 在老集合的位置是最大的，导致其他节点的 _mountIndex &lt; lastIndex，造成 D 没有执行移动操作，而是 A、B、C 全部移动到 D 节点后面的现象。</p>
-<p>【建议】开发过程中，尽量减少类似将一个节点从最后移动到最开头的操作，当节点数量过大或更新操作过于频繁时，在一定程度上会影响 React 的渲染性能。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><table>
-<thead>
-<tr>
-<th>假设策略</th>
-<th>优化策略</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>dom操作中跨层级的节点操作可以忽略</td>
-<td>tree diff：对树进行分层比对</td>
-</tr>
-<tr>
-<td>相同类生成类似的树结构，不同类生成不同的树结构</td>
-<td>Component diff：<br>相同类根据原比对规则（或shouldComponent可直接省略diff过程）<br>不同类则直接认为是不同的子节点，删除整个旧子树并创建新子树</td>
-</tr>
-<tr>
-<td>同一层级的节点可以根据id进行区分</td>
-<td>element diff:<br>提供了key，可以让react在旧子树中更快地找到可以被复用的节点（是一个mapping的过程）</td>
-</tr>
-</tbody></table>
-<p>建议：</p>
-<ul>
-<li>保持稳定的dom树结构</li>
-<li>在开发过程中，尽量减少类似将最后一个节点移动到列表首部的操作，当节点数量过大或更新操作过于频繁时，在一定程度上会影响 React 的渲染性能。</li>
-</ul>
-<h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><p><a href="https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/1" target="_blank" rel="noopener">https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/1</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/20346379" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/20346379</a></p>
-
-          
+          写React代码时，我们经常会在遍历列表节点的时候给每个列表项添加一个key属性，总是说它可以加快节点更新，那么具体是怎么更新，又是如何加快的呢？
+React 更新节点的过程React是通过更新其内部数据，驱动视图进行相应更新的一种模式，我们只需要关注想要关注的数据并对其进行操作。
+但是想要反映到真
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/07/27/React-key和diff/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -542,21 +470,15 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/07/27/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
