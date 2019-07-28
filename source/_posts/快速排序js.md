@@ -5,7 +5,7 @@ tags:
 - 算法
 - 排序
 - 面试
-catetories:
+categories:
 - 算法
 ---
 
