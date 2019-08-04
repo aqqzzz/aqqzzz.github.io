@@ -60,6 +60,12 @@ function debounce(fn, timeout) {
 
 lodash 的 debounce 实现
 
+- func
+- wait 
+- options
+  - trailing：boolean 在wait的结尾调用func
+  - leading：boolean 在wait的开始调用func
+
 ```javascript
 function debounce(func, wait, options) {
     let lastArgs,
@@ -209,3 +215,95 @@ function debounce(func, wait, options) {
 
 最后，如果不再有函数调用，就会在定时器结束时执行 trailingEdge。
 
+## 节流
+
+节流则不会管用户上次是什么时候调用的，只要时间到达节流设置的时间段，就会调用回调函数
+
+在 wait 开始时间段调用
+
+```javascript
+function throttole(func, wait) {
+	let previous = 0;
+  return function(...args) {
+    const now = +new Date();
+    if (now - previous >= wait) {
+      func.apply(this, args);
+      previous = now;
+		}
+	}
+}
+```
+
+在wait 结束时调用：
+
+```javascript
+function throttole(func, wait) {
+  const timer = null;
+  return function(...args) {
+    if (timer) {
+      return
+		}
+    timer = setTimeout(() => {
+      func.apply(this, args);
+      timer = null;
+    }, wait)
+	}
+}
+```
+
+
+
+对比可以发现，
+
+- 第一种方法在 timer 开始时就会触发回调函数，而第二种在 n 秒之后才会第一次执行
+- 第一种方法停止触发后没有办法再次触发事件，而第二种在停止触发之后还会进行一次事件执行
+
+如何自己添加参数来控制事件触发的时机
+
+options: 
+
+- Leading：是否在timer 开始时触发函数
+- trailing：是否在 timer 结束之后再触发一次函数
+
+```javascript
+function throttle(func, wait, options) {
+    var timeout, context, args, result;
+    var previous = 0;
+    if (!options) options = {};
+
+    var later = function() {
+        previous = options.leading === false ? 0 : new Date().getTime(); // leading 为 false 时previous清为0，方便下次throttled函数被调用时的判断
+        timeout = null;
+        func.apply(context, args);
+        if (!timeout) context = args = null;
+    };
+
+    var throttled = function() {
+        var now = new Date().getTime();
+        if (!previous && options.leading === false) previous = now; // leading时第一次调用时previous 和 now 相同， remaining = wait
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0 || remaining > wait) {
+          	// 这个判断条件在 trailing 和 leading 情况下都可能会进入，当 trailing 满足条件时也是通过这个分支真正执行函数的
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            previous = now;
+            func.apply(context, args);
+            if (!timeout) context = args = null;
+        } else if (!timeout && options.trailing !== false) {
+          	// trailing 第一次进入时 or 
+          	// trailing 回调函数已经被调用过一次了，设置下一次的timer，保证如果这次触发是wait 时间段内最后一次的话 等待wait之后会再次执行回调
+            timeout = setTimeout(later, remaining);
+        }
+    };
+    return throttled;
+}
+```
+
+注意点：
+
+1. 分支分割条件并不严格二分，trailing 和 leading 类型都会进入第一个判断分支进行执行，只有 trailing 第一次进入时 或者 trailing 回调函数之前刚刚被调用过一次，在第二个分支来设置 计时器，就算这样，也只有在 trailing 情况下的最后一次触发，会调用到 setTimeout 里的 later 函数。
+2. 要在later 函数里清空previous，保证throttle函数时隔 大于 wait 的时间之后再次被触发
