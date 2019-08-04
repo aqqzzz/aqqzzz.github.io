@@ -11,7 +11,7 @@ javascript 中， == 和 === 是有所不同的，== 号两侧的标记，只要
 
 == 转换逻辑可以用下图概括
 
-![img](https://user-gold-cdn.xitu.io/2018/12/19/167c4a2627fe55f1?imageslim)
+![](http://ww1.sinaimg.cn/large/8ac7964fly1g5nxa2ogutj20rx0buglx.jpg)
 
 ==状态下判断结果的流程图，可以总结为以下四步
 
