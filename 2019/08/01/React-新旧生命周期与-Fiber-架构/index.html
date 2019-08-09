@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://www.ayqy.net/cms/wordpress/wp-content/uploads/2018/01/fiber-tree.png">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5klvalzkjj21jk0i3gp4.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5klvysghjj20jx08mt9o.jpg">
-<meta property="og:updated_time" content="2019-08-01T15:54:45.850Z">
+<meta property="og:updated_time" content="2019-08-09T13:18:33.819Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React 新旧生命周期与 Fiber 架构">
 <meta name="twitter:description" content="昨天回来莫名颓在沙发上开始刷手机，刷着刷着就十点了，洗完澡都十点半了，唉我怎么能这么不上进呢 8月了！新的月份要有新的学习样貌！ 今天本来打算复习一下 React 的新旧生命周期，在看旧的笔记的时候想起来之前在网上看到过一份 Fiber 架构的详解，但是今天也没找到那一份，不过找到了另一份也同样优秀的Fiber架构讲解，果然世界上就是 大佬层出不穷呀。 所以今天就学习一下 React 新旧生命周期">
@@ -510,10 +510,10 @@
 <li>优先级机制</li>
 </ul>
 <p>工作循环是<em>基本的任务调度机制</em>，工作循环中每次处理一个任务（工作单元），处理完毕有一次喘息的机会：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// Flush asynchronous work until the deadline runs out of time.</span><br><span class="line">while (nextUnitOfWork !== null &amp;&amp; !shouldYield()) &#123;</span><br><span class="line">  nextUnitOfWork = performUnitOfWork(nextUnitOfWork);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Flush asynchronous work until the deadline runs out of time.</span></span><br><span class="line"><span class="keyword">while</span> (nextUnitOfWork !== <span class="literal">null</span> &amp;&amp; !shouldYield()) &#123;</span><br><span class="line">  nextUnitOfWork = performUnitOfWork(nextUnitOfWork);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>shouldYield</code>就是看时间用完了没（<code>idleDeadline.timeRemaining()</code>），没用完的话继续处理下一个任务，用完了就结束，把时间控制权还给主线程，等下一次<code>requestIdleCallback</code>回调再接着做：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// If there&apos;s work left over, schedule a new callback.</span><br><span class="line">if (nextFlushedExpirationTime !== NoWork) &#123;</span><br><span class="line">  scheduleCallbackWithExpiration(nextFlushedExpirationTime);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// If there's work left over, schedule a new callback.</span></span><br><span class="line"><span class="keyword">if</span> (nextFlushedExpirationTime !== NoWork) &#123;</span><br><span class="line">  scheduleCallbackWithExpiration(nextFlushedExpirationTime);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>也就是说，（不考虑突发事件的）正常调度是由工作循环来完成的，基本<em>规则</em>是：每个工作单元结束检查是否还有时间做下一个，没时间了就先“挂起”</p>
 <p>优先级机制用来处理突发事件与优化次序，例如：</p>
@@ -664,7 +664,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -675,7 +675,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -686,7 +686,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
