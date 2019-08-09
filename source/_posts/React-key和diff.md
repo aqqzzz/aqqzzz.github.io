@@ -211,7 +211,7 @@ _mountChildAtIndex: function(
 
 
 
-### 参考：
+### 参考
 
 https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/1
 

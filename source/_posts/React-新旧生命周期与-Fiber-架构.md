@@ -258,7 +258,7 @@ P.S.diff与reconciliation只是对应关系，并不等价，如果非要区分�
 
 工作循环是*基本的任务调度机制*，工作循环中每次处理一个任务（工作单元），处理完毕有一次喘息的机会：
 
-```
+```javascript
 // Flush asynchronous work until the deadline runs out of time.
 while (nextUnitOfWork !== null && !shouldYield()) {
   nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
@@ -267,7 +267,7 @@ while (nextUnitOfWork !== null && !shouldYield()) {
 
 `shouldYield`就是看时间用完了没（`idleDeadline.timeRemaining()`），没用完的话继续处理下一个任务，用完了就结束，把时间控制权还给主线程，等下一次`requestIdleCallback`回调再接着做：
 
-```
+```javascript
 // If there's work left over, schedule a new callback.
 if (nextFlushedExpirationTime !== NoWork) {
   scheduleCallbackWithExpiration(nextFlushedExpirationTime);
