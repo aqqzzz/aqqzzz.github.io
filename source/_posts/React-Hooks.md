@@ -2,10 +2,10 @@
 title: React Hooks
 date: 2019-08-09 18:24:27
 tags:
-- react
-- react hooks
+- React
+- React hooks
 categories:
-- react
+- React
 ---
 
 这两天在公司写需求的时候，有一个项目react版本在 16.8，所以想顺便学习一下 react hooks
@@ -135,4 +135,3 @@ const [state2] = useState(2)
 [阅读源码后，来讲讲React Hooks是怎么实现的](https://juejin.im/post/5bdfc1c4e51d4539f4178e1f#comment)
 
 [React hook: not magic, just arrays](https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e)
-
