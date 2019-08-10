@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="面试,基础,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="”利奇马“来上海了，台风暴雨也是我第一次见识，不过还好今天上海不是中心，风雨都没有那么严重，但是这样的天气倒是让人不想工作，所以一废废到了6点。。。。 扯皮结束 一个页面，从输入URL到页面展示的过程中发生了什么，这个问题在很多面试中都会出现，究其原因，也自然是因为它真的是一个可以全面考察个人基础知识的问题，今天就来仔细分析一下这个问题（只考虑前端和网络的一些问题，后端具体问题不研究 当然，会参考">
+<meta name="keywords" content="面试,基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从输入URL到页面展示的过程">
+<meta property="og:url" content="http://aqqzzz.github.io/2019/08/10/从输入URL到页面展示的过程/index.html">
+<meta property="og:site_name" content="张耳朵的博客">
+<meta property="og:description" content="”利奇马“来上海了，台风暴雨也是我第一次见识，不过还好今天上海不是中心，风雨都没有那么严重，但是这样的天气倒是让人不想工作，所以一废废到了6点。。。。 扯皮结束 一个页面，从输入URL到页面展示的过程中发生了什么，这个问题在很多面试中都会出现，究其原因，也自然是因为它真的是一个可以全面考察个人基础知识的问题，今天就来仔细分析一下这个问题（只考虑前端和网络的一些问题，后端具体问题不研究 当然，会参考">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5ut3k2orrj20sl0jtgmq.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-5793aec83fc645e002a1cd70ab7209a3_r.jpg">
+<meta property="og:updated_time" content="2019-08-10T14:48:27.421Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从输入URL到页面展示的过程">
+<meta name="twitter:description" content="”利奇马“来上海了，台风暴雨也是我第一次见识，不过还好今天上海不是中心，风雨都没有那么严重，但是这样的天气倒是让人不想工作，所以一废废到了6点。。。。 扯皮结束 一个页面，从输入URL到页面展示的过程中发生了什么，这个问题在很多面试中都会出现，究其原因，也自然是因为它真的是一个可以全面考察个人基础知识的问题，今天就来仔细分析一下这个问题（只考虑前端和网络的一些问题，后端具体问题不研究 当然，会参考">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5ut3k2orrj20sl0jtgmq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://aqqzzz.github.io/2019/08/10/从输入URL到页面展示的过程/">
+
+
+
+
+
+  <title>从输入URL到页面展示的过程 | 张耳朵的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">张耳朵的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://aqqzzz.github.io/2019/08/10/从输入URL到页面展示的过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张耳朵">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张耳朵的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从输入URL到页面展示的过程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-10T18:47:07+08:00">
+                2019-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>”利奇马“来上海了，台风暴雨也是我第一次见识，不过还好今天上海不是中心，风雨都没有那么严重，但是这样的天气倒是让人不想工作，所以一废废到了6点。。。。</p>
+<p>扯皮结束</p>
+<p>一个页面，从输入URL到页面展示的过程中发生了什么，这个问题在很多面试中都会出现，究其原因，也自然是因为它真的是一个可以全面考察个人基础知识的问题，今天就来仔细分析一下这个问题（只考虑前端和网络的一些问题，后端具体问题不研究</p>
+<p>当然，会参考很多网上大佬的结论😬</p>
+<p>不过本文不会对其中提到的一些特别细节的东西进行阐述，这么写的话这篇文章就太杂了，细节如果有必要的话会另开一篇文章，TODO 记得把链接链过来</p>
+<h2 id="输入地址"><a href="#输入地址" class="headerlink" title="输入地址"></a>输入地址</h2><p>当我们开始在地址栏里输入url的时候，浏览器就已经开始匹配了，它们会从 历史记录、书签 等位置寻找可能匹配的url，然后给出智能提示进行补全</p>
+<p>更高端的是，类似 chrome 这样的浏览器，甚至会从缓存中把网页展示出来</p>
+<h2 id="2-查找-url-对应的-IP-地址（DNS查询）"><a href="#2-查找-url-对应的-IP-地址（DNS查询）" class="headerlink" title="2. 查找 url 对应的 IP 地址（DNS查询）"></a>2. 查找 url 对应的 IP 地址（DNS查询）</h2><p>在因特网的世界里，每个服务器对应的，都是类似 xxx.xxx.xxx.xxx 这样的IP地址，这个地址对于计算机来说，清晰明了好辨认，但是对于人类而言，没有语义的数字显然不够，所以我们使用 url 对 IP 地址进行代表，那么，这个 url 又是如何转换成 计算机方便辨认的 IP 地址的呢？这里就涉及到了 DNS 查询的过程，主要涉及以下几步（注意，<strong>目的是拿到域名对应的IP地址</strong></p>
+<ol>
+<li>浏览器首先会查看本地的 hosts 文件，看有没有和这个域名对应的规则，如果有的话就可以直接拿到对应的IP地址了，没有的话只能进行下一步。</li>
+<li>浏览器在本地hosts里没有找到，那么会首先向本地的DNS服务器发起查询请求（本地DNS服务器通常指网络接入服务提供商，比如中国电信、中国移动等），这是一个完全托管的行为，当浏览器向本地DNS服务器发出请求之后，就可以不用管它了，本地DNS服务器会自己处理各种过程，并且把最后查到的 IP 地址返回给浏览器（这里就是一个递归查询的过程）</li>
+<li>本地DNS服务器接收到查询请求之后，会首先在自己的缓存记录里查找是不是有这样的一个域名记录，如果有的话，就可以直接把 ip 地址返回给浏览器了，如果没有的话，像之前说的，它不会直接向浏览器报告这个结果，而是直接去向 <strong>DNS根服务器</strong> 进行查询</li>
+<li><strong>DNS根服务器</strong> 不会直接记录 具体域名 和 ip地址的对应关系，它记录的是 下一级域名 对应的 DNS 服务器地址（比如像 .com \ .net 这种域名服务器的地址），他会把这个DNS服务器的地址返回给 本地DNS服务器</li>
+<li>本地DNS服务器收到这个地址之后，向这个 <strong>DNS域服务器</strong> 发起请求进行查询，而这个 DNS域服务器 存储的也是 下一级域名解析服务器的地址，它会在查询之后把这个地址返回给 本地DNS服务器</li>
+<li>本地DNS服务器继续向这个 <strong>域名的解析服务器</strong> 发起请求，这个服务器存储的就是 具体域名的IP地址了，它把这个 IP地址返回给 本地DNS服务器</li>
+<li>本地DNS服务器接收到这个 IP 地址之后，把这个IP地址返回给浏览器，同时把这个 域名-IP 的映射关系添加到自己的缓存记录中去</li>
+</ol>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5ut3k2orrj20sl0jtgmq.jpg" alt></p>
+<p>浏览器跟本地DNS服务器之间的查询方式，就是一个递归查询的过程，浏览器直接托管本地DNS服务器进行查询</p>
+<p>而本地DNS服务器跟其他域名服务器之间的查询过程，就是一个迭代查询的过程了，都是本地DNS服务器再控制</p>
+<p>【others】</p>
+<p>提一嘴DNS负载均衡：</p>
+<p>其实这个过程就是为了避免某个主机由于访问量过大而无法承受的情况，DNS负载均衡就是在DNS服务器中为同一个主机名配置多个IP地址，在应答DNS查询的时候，按照顺序返回不同的IP地址的主机，将客户端的访问引导到不同的机器上去</p>
+<p>更复杂一点的情况，会在这里用到CDN来降低由于服务器性能、服务器分布、网络带宽带来的时延。过程：</p>
+<ol>
+<li><p>在这里的最后一级域名服务器，返回的不是 请求资源的主机，而是交给CNAME指向的CDN专用DNS服务器，这个CDN的域名服务器会把<strong>CDN的全局负载均衡设备IP地址</strong> 返回给用户</p>
+</li>
+<li><p>用户向这个 全局负载均衡设备发起请求</p>
+</li>
+<li><p>全局负载均衡设备 根据用户所请求资源的内容，以及用户的IP地址，选择一台用户所属区域的 <strong>局域CDN负载均衡设备</strong>，告诉用户向这个地址发起请求</p>
+</li>
+<li><p><strong>区域CDN负载均衡设备</strong> 会为用户选择一个合适的缓存服务器提供服务，选择的依据包括：</p>
+<ol>
+<li>根据用户IP地址判断 距离较近的 缓存服务器</li>
+<li>根据用户所请求的内容，判断哪个服务器上可以提供</li>
+<li>查询各缓存服务器的当前负载情况，判断谁还有余力</li>
+</ol>
+<p>然后把这个缓存服务器的地址返回给 <strong>全局CDN负载均衡设备</strong></p>
+</li>
+<li><p>全局CDN负载均衡设备把这个缓存服务器的地址返回给用户</p>
+</li>
+<li><p>用户向缓存服务器发起请求。如果缓存服务器上没有用户想要的内容，而区域均衡设备依然将它分配给了用户，那么这台服务器就要向它的上一级缓存服务器请求内容，直至追溯到网站的源服务器将内容拉到本地。</p>
+</li>
+</ol>
+<p><img src="https://pic3.zhimg.com/v2-5793aec83fc645e002a1cd70ab7209a3_r.jpg" alt></p>
+<h2 id="3-浏览器向-Web-服务器发送-HTTP-请求"><a href="#3-浏览器向-Web-服务器发送-HTTP-请求" class="headerlink" title="3. 浏览器向 Web 服务器发送 HTTP 请求"></a>3. 浏览器向 Web 服务器发送 HTTP 请求</h2><p>重点在TCP连接建立的过程，三次握手，详细过程在另一篇文章写（TODO TCP三次握手，四次挥手，TCP时延），这里就带过</p>
+<ul>
+<li>浏览器向服务器发送建立连接的请求（SYN = 1， seq = x）</li>
+<li>服务器响应并告诉浏览器我收到了你建立连接的请求（SYN = 1， ACK = 1， seq = y，ack = x+1）</li>
+<li>浏览器响应并告诉服务器，我收到了你的确认消息，接下来可以开始发送数据了（ACK = 1，seq = x+1，ack = y+1）</li>
+</ul>
+<h2 id="4-服务器收到请求，进行处理并返回HTTP响应"><a href="#4-服务器收到请求，进行处理并返回HTTP响应" class="headerlink" title="4. 服务器收到请求，进行处理并返回HTTP响应"></a>4. 服务器收到请求，进行处理并返回HTTP响应</h2><p>状态码：</p>
+<ul>
+<li>1xx：信息性状态码，表示服务器已经接受了客户端请求，客户端可以继续发送请求</li>
+<li>2xx：成功状态码，表示服务器已经成功接收到进行并进行了处理</li>
+<li>3xx：重定向状态码<ul>
+<li>301：永久性重定向</li>
+<li>302：暂时性重定向</li>
+<li>304：缓存——TODO 缓存文章</li>
+</ul>
+</li>
+<li>4xx：客户端错误状态码，表示客户端有错误<ul>
+<li>401：请求语法格式有误</li>
+<li>401：请求未授权，该状态代码必须与 WWW-Authenticate 报头域一起使用</li>
+<li>403：服务器收到请求，但是拒绝提供服务</li>
+<li>404：Not Found</li>
+</ul>
+</li>
+<li>5xx：服务端错误</li>
+</ul>
+<p>301 和 302 的区别：</p>
+<p>301为永久性重定向，302为暂时性重定向</p>
+<ul>
+<li>对于浏览器而言<ul>
+<li>301：浏览器会把这个重定向缓存起来，下一次就不查询，直接请求重定向之后的网址（类似强缓存）</li>
+<li>302：只是暂时性的，所以浏览器每次都会先去请求一次原网址</li>
+</ul>
+</li>
+<li>搜索引擎的表现：<ul>
+<li>301：类似继承遗产，旧网址的搜索排名会直接转移给新网址，而且搜索引擎收录的会换成 新的网址对应新网址的内容</li>
+<li>302：搜索排名不会转移，旧的网址对应新的内容</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-浏览器显示-html"><a href="#5-浏览器显示-html" class="headerlink" title="5. 浏览器显示 html"></a>5. 浏览器显示 html</h2><p>构建DOM树、构建CSSOM树 -&gt; 构建 render 树 -&gt; 布局 render 树</p>
+<p>CSSOM树和DOM树的构建是同步的，但是CSS树的构建会阻塞 render 树的构建（否则样式突然出现也很惊吓），所以我们通常会把 css 放在代码html开头，让浏览器尽可能早地开始构建CSS树</p>
+<p>而DOM树的构建和 js 代码的加在执行也是互斥的，当浏览器在解析DOM树的过程中发现了 script 标签，那么它会停止DOM树的构建，加载js代码并执行完毕之后，再重新开始DOM树的构建。</p>
+<p>如果在script标签之前有一个外联的 css link 标签，那么构建过程会变成：</p>
+<pre><code>1. 构建DOM树 
+ 2. 遇到外联 link标签 
+ 3. fetch link资源，同时构建DOM树 
+ 4. 遇到 script 标签 
+ 5. 停止DOM树构建，fetch script资源 
+ 6. 等待第3步骤中的CSS资源fetch回来，并且等待CSSOM树构建完成（这里 CSSOM树的构建阻塞的 js 代码的**执行**）
+ 7. 执行 js 代码
+ 8. 继续构建DOM树</code></pre><p>不管是 JS的加载与执行 阻塞 DOM树的构建，还是 CSSOM 的构建阻塞 JS 的执行，都是符合浏览器的行为逻辑的，因为 js 是有可能会操作 DOM 节点 和 CSS 节点的，那么这种阻塞行为其实就是为了 保证 js 代码执行的正确性</p>
+<p>script 标签的几种不同类型可能会有所不同</p>
+<ul>
+<li>async：异步，js 的加载不会阻塞DOM树的构建，js 一旦加载完毕，那么DOM树构建立即停止，开始执行 js代码，js代码执行完毕之后再重新开始构建DOM树</li>
+<li>defer：延迟，等待DOM树构建完成之后才会加载执行 js 代码</li>
+<li>普通的script标签：js 的加载执行 都会阻塞 DOM 树的构建</li>
+</ul>
+<p>js 代码对 CSS 和 DOM 的修改，其实是可能会触发浏览器的 重排和 重绘的，另开一篇文章讲解 </p>
+<p>TODO：浏览器重排重绘、浏览器层解析，composite过程</p>
+<p>参考：</p>
+<p><a href="https://www.zhihu.com/question/36514327?rf=37353035" target="_blank" rel="noopener">知乎-CDN</a></p>
+<p><a href="https://www.w3cplus.com/javascript/building-the-dom-faster-speculative-parsing-async-defer-and-preload.html" target="_blank" rel="noopener">更快地构建DOM: 使用预解析, async, defer 以及 preload)</a></p>
+<p><a href="https://mp.weixin.qq.com/s/z8aJZ14NAc-qXx3Qt4gZLQ" target="_blank" rel="noopener">从输入URL到页面展示到底发生了什么</a></p>
+<p>TODO</p>
+<ul>
+<li>TCP 三次握手、四次挥手、TCP时延原因</li>
+<li>缓存</li>
+<li>浏览器重排重绘、浏览器 层解析、composite过程</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/09/React-Hooks/" rel="next" title="React Hooks">
+                <i class="fa fa-chevron-left"></i> React Hooks
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="张耳朵">
+            
+              <p class="site-author-name" itemprop="name">张耳朵</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#输入地址"><span class="nav-number">1.</span> <span class="nav-text">输入地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-查找-url-对应的-IP-地址（DNS查询）"><span class="nav-number">2.</span> <span class="nav-text">2. 查找 url 对应的 IP 地址（DNS查询）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-浏览器向-Web-服务器发送-HTTP-请求"><span class="nav-number">3.</span> <span class="nav-text">3. 浏览器向 Web 服务器发送 HTTP 请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-服务器收到请求，进行处理并返回HTTP响应"><span class="nav-number">4.</span> <span class="nav-text">4. 服务器收到请求，进行处理并返回HTTP响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-浏览器显示-html"><span class="nav-number">5.</span> <span class="nav-text">5. 浏览器显示 html</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张耳朵</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
