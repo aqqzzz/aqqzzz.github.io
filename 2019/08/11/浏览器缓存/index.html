@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="面试,基础,缓存,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="今天就填一下昨天的坑，先讲一下浏览器缓存的策略 浏览器缓存其实就是HTTP缓存机制，分两种类型：强制缓存和协商缓存，浏览器会先尝试命中强制缓存，如果没有对应缓存标识，那么浏览器会直接向服务器发起请求，而如果浏览器缓存发挥了对应的缓存标识，但没有对应的缓存结果，那么浏览器会根据这个缓存标识，向服务器发起请求进行协商缓存的过程 强制缓存强制缓存是一种可以直接在浏览器缓存处就解决的缓存策略，如果命中的话">
+<meta name="keywords" content="面试,基础,缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器缓存">
+<meta property="og:url" content="http://aqqzzz.github.io/2019/08/11/浏览器缓存/index.html">
+<meta property="og:site_name" content="张耳朵的博客">
+<meta property="og:description" content="今天就填一下昨天的坑，先讲一下浏览器缓存的策略 浏览器缓存其实就是HTTP缓存机制，分两种类型：强制缓存和协商缓存，浏览器会先尝试命中强制缓存，如果没有对应缓存标识，那么浏览器会直接向服务器发起请求，而如果浏览器缓存发挥了对应的缓存标识，但没有对应的缓存结果，那么浏览器会根据这个缓存标识，向服务器发起请求进行协商缓存的过程 强制缓存强制缓存是一种可以直接在浏览器缓存处就解决的缓存策略，如果命中的话">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5vz3dirxaj20i10aowem.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5vz5rtd7ej20j30bbjrj.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5vz6cd4cbj20ie09gq30.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5w2fsati4j20jz0f774l.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5w2ibvvj1j20lc0fs3yu.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5w2x2pzkwj20qa0hswex.jpg">
+<meta property="og:updated_time" content="2019-08-11T14:02:21.799Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浏览器缓存">
+<meta name="twitter:description" content="今天就填一下昨天的坑，先讲一下浏览器缓存的策略 浏览器缓存其实就是HTTP缓存机制，分两种类型：强制缓存和协商缓存，浏览器会先尝试命中强制缓存，如果没有对应缓存标识，那么浏览器会直接向服务器发起请求，而如果浏览器缓存发挥了对应的缓存标识，但没有对应的缓存结果，那么浏览器会根据这个缓存标识，向服务器发起请求进行协商缓存的过程 强制缓存强制缓存是一种可以直接在浏览器缓存处就解决的缓存策略，如果命中的话">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g5vz3dirxaj20i10aowem.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://aqqzzz.github.io/2019/08/11/浏览器缓存/">
+
+
+
+
+
+  <title>浏览器缓存 | 张耳朵的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">张耳朵的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://aqqzzz.github.io/2019/08/11/浏览器缓存/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张耳朵">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张耳朵的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浏览器缓存</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-11T21:54:45+08:00">
+                2019-08-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天就填一下昨天的坑，先讲一下浏览器缓存的策略</p>
+<p>浏览器缓存其实就是HTTP缓存机制，分两种类型：强制缓存和协商缓存，浏览器会先尝试命中强制缓存，如果没有对应缓存标识，那么浏览器会直接向服务器发起请求，而如果浏览器缓存发挥了对应的缓存标识，但没有对应的缓存结果，那么浏览器会根据这个缓存标识，向服务器发起请求进行协商缓存的过程</p>
+<h2 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h2><p>强制缓存是一种可以直接在浏览器缓存处就解决的缓存策略，如果命中的话是不需要发送多余的请求的，主要分以下三种情况</p>
+<h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><ol>
+<li>不存在缓存标识和缓存结果，强制缓存失效，直接向服务器发起请求</li>
+</ol>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5vz3dirxaj20i10aowem.jpg" alt="img"></p>
+<ol>
+<li>存在缓存标识和缓存结果，但是该结果已经失效，强制缓存失效，则使用协商缓存（下文分析）</li>
+</ol>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5vz5rtd7ej20j30bbjrj.jpg" alt="img"></p>
+<ol>
+<li>存在该缓存结果和缓存标识，且该结果尚未失效，强制缓存生效，直接返回该结果，如下图</li>
+</ol>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5vz6cd4cbj20ie09gq30.jpg" alt="img"></p>
+<h3 id="缓存字段"><a href="#缓存字段" class="headerlink" title="缓存字段"></a>缓存字段</h3><p>强制缓存涉及到的HTTP字段：</p>
+<h4 id="Expires-HTTP1-0"><a href="#Expires-HTTP1-0" class="headerlink" title="Expires (HTTP1.0)"></a>Expires (HTTP1.0)</h4><p>是一个绝对时间，在这个时间之前的请求都会直接命中，而在这个时间之后就认为缓存结果失效了</p>
+<p>缺点：绝对时间是浏览器端的时间，如果客户端的时间与服务端的时间有误差的话，这个缓存时间就不够精确了</p>
+<h4 id="Cache-Control-HTTP1-1"><a href="#Cache-Control-HTTP1-1" class="headerlink" title="Cache-Control (HTTP1.1)"></a>Cache-Control (HTTP1.1)</h4><p>取值：</p>
+<ul>
+<li>public：所有内容都将被缓存（客户端和代理服务器都可缓存）</li>
+<li>private：所有内容只有客户端可以缓存，Cache-Control的默认取值</li>
+<li>no-cache：客户端缓存内容，但是是否使用缓存则需要经过协商缓存来验证决定</li>
+<li>no-store：所有内容都不会被缓存，即不使用强制缓存，也不使用协商缓存</li>
+<li>max-age=xxx (xxx is numeric)：缓存内容将在xxx秒后失效</li>
+</ul>
+<p>Max-age 代表的是一个相对时间，当无法确定客户端时间与服务端时间是否有误差的情况下使用这个字段会比较稳妥</p>
+<p>当 Cache-controle 和 expires 同时出现时，会以 Cache-control 字段值为准</p>
+<h3 id="强制缓存的存放位置"><a href="#强制缓存的存放位置" class="headerlink" title="强制缓存的存放位置"></a>强制缓存的存放位置</h3><p>浏览器缓存的存放位置有两种，一个是内存，一个是硬盘</p>
+<ul>
+<li>内存读取速度快，但是存放东西更少</li>
+<li>硬盘读取速度慢，但是可以存放更多，更长时限</li>
+</ul>
+<h2 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h2><h3 id="协商缓存机制"><a href="#协商缓存机制" class="headerlink" title="协商缓存机制"></a>协商缓存机制</h3><p>协商缓存是需要跟服务器交换信息才知道是否可以使用缓存</p>
+<p>协商缓存就是强制缓存失效后，浏览器携带缓存标识向服务器发起请求，由服务器根据缓存标识决定是否使用缓存的过程，主要有以下两种情况：</p>
+<p>（强制缓存失效之后才会尝试协商缓存</p>
+<p>协商缓存生效，返回304</p>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5w2fsati4j20jz0f774l.jpg" alt="img"></p>
+<p>返回协商缓存失败，返回200和请求结果</p>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5w2ibvvj1j20lc0fs3yu.jpg" alt="img"></p>
+<h3 id="协商缓存字段"><a href="#协商缓存字段" class="headerlink" title="协商缓存字段"></a>协商缓存字段</h3><h4 id="last-modified-if-modified-since"><a href="#last-modified-if-modified-since" class="headerlink" title="last-modified / if-modified-since"></a>last-modified / if-modified-since</h4><p>Last-Modified是服务器响应请求时，返回该资源文件在服务器最后被修改的时间</p>
+<p>If-Modified-Since则是客户端再次发起该请求时，携带上次请求返回的Last-Modified值，通过此字段值告诉服务器该资源上次请求返回的最后被修改时间。服务器收到这个请求之后，会把这个 If-Modified-Since 字段值跟 该资源在服务器的最后修改时间 进行对比，若这个修改时间 &gt;  If-Modified-Since 字段值，则重新返回新资源，否则返回304，表示缓存没有过期，客户端使用浏览器缓存中的内容</p>
+<h4 id="Etag-If-None-Match"><a href="#Etag-If-None-Match" class="headerlink" title="Etag / If-None-Match"></a>Etag / If-None-Match</h4><p>Etag：服务器响应请求时，当前资源文件的一个唯一标识(由服务器生成)</p>
+<p>If-None-Match：客户端再次发起请求时，携带上次请求返回的Etag值，服务器收到之后吧这个值跟之前生成的Etag值进行对比，如果不同的话返回新资源并携带etag，否则返回304，表示缓存没有过期，客户端使用浏览器缓存中的内容</p>
+<p>Etag 优先级高于 last-modified</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>强制缓存优先于协商缓存进行，若强制缓存(Expires和Cache-Control)生效则直接使用缓存，若不生效则进行协商缓存(Last-Modified / If-Modified-Since和Etag / If-None-Match)，协商缓存由服务器决定是否使用缓存，若协商缓存失效，那么代表该请求的缓存失效，重新获取请求结果，再存入浏览器缓存中；生效则返回304，继续使用缓存，主要过程如下：</p>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g5w2x2pzkwj20qa0hswex.jpg" alt="img"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/缓存/" rel="tag"># 缓存</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/10/从输入URL到页面展示的过程/" rel="next" title="从输入URL到页面展示的过程">
+                <i class="fa fa-chevron-left"></i> 从输入URL到页面展示的过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="张耳朵">
+            
+              <p class="site-author-name" itemprop="name">张耳朵</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#强制缓存"><span class="nav-number">1.</span> <span class="nav-text">强制缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存策略"><span class="nav-number">1.1.</span> <span class="nav-text">缓存策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存字段"><span class="nav-number">1.2.</span> <span class="nav-text">缓存字段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Expires-HTTP1-0"><span class="nav-number">1.2.1.</span> <span class="nav-text">Expires (HTTP1.0)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cache-Control-HTTP1-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">Cache-Control (HTTP1.1)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强制缓存的存放位置"><span class="nav-number">1.3.</span> <span class="nav-text">强制缓存的存放位置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协商缓存"><span class="nav-number">2.</span> <span class="nav-text">协商缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#协商缓存机制"><span class="nav-number">2.1.</span> <span class="nav-text">协商缓存机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协商缓存字段"><span class="nav-number">2.2.</span> <span class="nav-text">协商缓存字段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#last-modified-if-modified-since"><span class="nav-number">2.2.1.</span> <span class="nav-text">last-modified / if-modified-since</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Etag-If-None-Match"><span class="nav-number">2.2.2.</span> <span class="nav-text">Etag / If-None-Match</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张耳朵</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
