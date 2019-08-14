@@ -4,7 +4,7 @@ date: 2019-08-14 22:02:18
 tags:
 - javascript
 - 原型
-categories：
+categories: 
 - javascript
 ---
 
