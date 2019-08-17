@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g60qzi5vvpj20vg0c275c.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g60rj1wb2rj216g0kkgoo.jpg">
-<meta property="og:updated_time" content="2019-08-15T15:37:20.046Z">
+<meta property="og:updated_time" content="2019-08-17T11:55:57.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="javascript之继承">
 <meta name="twitter:description" content="今天复习一下 javascript 的继承 javascript 的继承有：原型继承、经典继承、组合继承、寄生组合式继承几种，我们今天就来介绍一些这些继承的方式 1234567891011121314function Parent(age) &amp;#123;  this.name = &apos;huachenyu&apos;;  this.names = [&apos;huachenyu&apos;, &apos;et&apos;];  this.age =">
@@ -397,7 +397,7 @@
 <p>那么如何避免这次多余的调用呢</p>
 <p>也就是说 如何优化<code>Child.prototype = new Parent()</code> ，使得 Child.prototype 上不会存在 这套多余的属性</p>
 <p>只要将 Child.prototype 直接连接到 Parent.prototype上即可，Parent实例的属性由 Parent.call 提供，而Parent原型链的属性则由 Parent.prototype 提供</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inherit</span>(<span class="params">Child, Parent</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">  F.prototype = Parent.prototype;</span><br><span class="line">  Child.prototype = <span class="keyword">new</span> F();</span><br><span class="line">  Child.prototype.constructor = Child;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inherit</span>(<span class="params">Child, Parent</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">  F.prototype = Parent.prototype;</span><br><span class="line">  Child.prototype = <span class="keyword">new</span> F();</span><br><span class="line">  Child.prototype.constructor = Child;</span><br><span class="line">&#125;</span><br><span class="line">或</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inherit</span>(<span class="params">Child, Parent</span>) </span>&#123;</span><br><span class="line">	Child.prototype = <span class="built_in">Object</span>.create(Parent.prototype); </span><br><span class="line">  <span class="comment">// Object.create(proto, [protoProp])，以proto为原型创建一个新的对象</span></span><br><span class="line">  Child.prototype.constructor = Child;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>中间的 function F，切断了 Child.prototype 和 Parent 构造函数之间的联系，进而直接跟 Parent.prototype 建立了联系</p>
 <p>引用《JavaScript高级程序设计》中对寄生组合式继承的夸赞就是：</p>
@@ -524,7 +524,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -535,7 +535,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
