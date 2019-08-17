@@ -126,6 +126,12 @@ function inherit(Child, Parent) {
   Child.prototype = new F();
   Child.prototype.constructor = Child;
 }
+或
+function inherit(Child, Parent) {
+	Child.prototype = Object.create(Parent.prototype); 
+  // Object.create(proto, [protoProp])，以proto为原型创建一个新的对象
+  Child.prototype.constructor = Child;
+}
 ```
 
 中间的 function F，切断了 Child.prototype 和 Parent 构造函数之间的联系，进而直接跟 Parent.prototype 建立了联系
