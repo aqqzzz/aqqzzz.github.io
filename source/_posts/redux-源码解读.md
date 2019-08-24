@@ -382,9 +382,11 @@ thunk 的含义就是 延迟执行，这里其实是延迟了真正的dispatch�
 
 单纯redux 的使用流程为：
 
-1. combineReducer
-2. applyMiddlewares( ...midlewares )
+1. combineReducer——合并 reducer
+2. applyMiddlewares( ...midlewares )——增强dispatch
 3. createStore( rootReducer, preloadState, applyMiddlewares(...midlewares))
+4. store.subscribe——注册监听方法，当 dispatch 时触发
+5. dispatch(action)——触发reducer更新state树并依次调用对应的listeners监听方法
 
 ### 参考
 
