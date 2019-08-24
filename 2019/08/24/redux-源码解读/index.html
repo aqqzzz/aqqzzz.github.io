@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="React,Redux,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这周也不知道在忙什么，愧疚 leader说之前有个面试的同学每天写一篇总结，结果啥都问不倒，那我也努力一下，先来每两天一篇，努力尝试自己产出。 今天来读一下 Redux 的源码，其实之前也读过，算是复习 Redux 简介 目的：使得状态的变化变得可预测 三个特性：  单一数据源：整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 s">
+<meta name="keywords" content="React,Redux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redux 源码解读">
+<meta property="og:url" content="http://aqqzzz.github.io/2019/08/24/redux-源码解读/index.html">
+<meta property="og:site_name" content="张耳朵的博客">
+<meta property="og:description" content="这周也不知道在忙什么，愧疚 leader说之前有个面试的同学每天写一篇总结，结果啥都问不倒，那我也努力一下，先来每两天一篇，努力尝试自己产出。 今天来读一下 Redux 的源码，其实之前也读过，算是复习 Redux 简介 目的：使得状态的变化变得可预测 三个特性：  单一数据源：整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 s">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g6b08rfm9yj21aq0jqdli.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g6b0sl1ywqj20as0digmm.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g6b16bdue1j20ng08mgn1.jpg">
+<meta property="og:updated_time" content="2019-08-24T14:38:25.670Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redux 源码解读">
+<meta name="twitter:description" content="这周也不知道在忙什么，愧疚 leader说之前有个面试的同学每天写一篇总结，结果啥都问不倒，那我也努力一下，先来每两天一篇，努力尝试自己产出。 今天来读一下 Redux 的源码，其实之前也读过，算是复习 Redux 简介 目的：使得状态的变化变得可预测 三个特性：  单一数据源：整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 s">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g6b08rfm9yj21aq0jqdli.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://aqqzzz.github.io/2019/08/24/redux-源码解读/">
+
+
+
+
+
+  <title>redux 源码解读 | 张耳朵的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">张耳朵的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://aqqzzz.github.io/2019/08/24/redux-源码解读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张耳朵">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张耳朵的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redux 源码解读</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-24T17:24:23+08:00">
+                2019-08-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这周也不知道在忙什么，愧疚</p>
+<p>leader说之前有个面试的同学每天写一篇总结，结果啥都问不倒，那我也努力一下，先来每两天一篇，努力尝试自己产出。</p>
+<p>今天来读一下 Redux 的源码，其实之前也读过，算是复习</p>
+<h3 id="Redux-简介"><a href="#Redux-简介" class="headerlink" title="Redux 简介"></a>Redux 简介</h3><p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g6b08rfm9yj21aq0jqdli.jpg" alt></p>
+<p>目的：使得状态的变化变得可预测</p>
+<p>三个特性：</p>
+<ol>
+<li>单一数据源：<strong>整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 store 中</strong></li>
+<li>State 是只读的：只能通过 派发 action 对象来触发 state的更新</li>
+<li>使用纯函数来进行修改：描述 action 如何改变 state 的纯函数</li>
+</ol>
+<p>核心实现原理：</p>
+<ol>
+<li><p>观察者模式：</p>
+<p>通过 store.subscribe 注册观察者，并在dispatch 之后逐一调用注册的观察者方法</p>
+</li>
+<li><p>combineReducer：将多个单独的数据源合并为一个，并返回一个接受一个 state 和 action 作为参数的函数</p>
+<p>之后作为总的reducer函数，在 createStore 时作为参数被传入</p>
+</li>
+<li><p>applyMiddleware：核心代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> middlewareAPI = &#123;</span><br><span class="line">  getState: store.getState,</span><br><span class="line">  dispatch: <span class="function">(<span class="params">...args</span>) =&gt;</span> dispatch(...args),</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> chains = middlewares.map(<span class="function">(<span class="params">middleware</span>) =&gt;</span> middleware(middlewareAPI));</span><br><span class="line">dispatch = compose(...chains)(store.dispatch);</span><br></pre></td></tr></table></figure>
+
+<p>增强dispatch，当最终增强之后的dispatch收到 action 时，真正执行dispatch函数，也就是action的派发</p>
+</li>
+</ol>
+<p>目录结构：</p>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g6b0sl1ywqj20as0digmm.jpg" alt></p>
+<p>Utils 里为一些工具文件</p>
+<ul>
+<li>actionTypes：定义了 INIT、REPLACE 等redux内置的action类型，由 redux 自行调用</li>
+<li>isPlainObject：判断当前元素是否是一个纯对象（Object）</li>
+<li>Warning：在 console 提示错误的地方</li>
+</ul>
+<h3 id="入口文件——index-js"><a href="#入口文件——index-js" class="headerlink" title="入口文件——index.js"></a>入口文件——index.js</h3><p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1g6b16bdue1j20ng08mgn1.jpg" alt></p>
+<p>就是export了一些 redux 可以用的东西（虽然 compose 真的从来没有用过）</p>
+<p>ok，那么我们就从这几个文件开始看代码</p>
+<h3 id="createStore——创建应用的-store-对象"><a href="#createStore——创建应用的-store-对象" class="headerlink" title="createStore——创建应用的 store 对象"></a>createStore——创建应用的 store 对象</h3><p>应用的 store 其实并不是指 整个应用的 state树，而是一个包含了很多方法的对象</p>
+<p>createStore 的返回值就是这个对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">    dispatch, <span class="comment">// 派发action &amp; 实际调用 注册的listeners的地方</span></span><br><span class="line">    subscribe, <span class="comment">// 注册观察者</span></span><br><span class="line">    getState, <span class="comment">// 获取当前应用state树</span></span><br><span class="line">    replaceReducer, <span class="comment">// 替换 createStore时传入的 根reducer 方法</span></span><br><span class="line">    [$$observable]: observable <span class="comment">// [$$observable] 并没有看懂</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>没有明显的调用顺序</p>
+<h4 id="subscribe"><a href="#subscribe" class="headerlink" title="subscribe"></a>subscribe</h4><p>代码并不复杂，功能也不复杂，只是为了注册一个观察者，但是这里有一个值得注意的点是，因为在dispatch过程中也是有可能会注册到观察者的，但是却无法保证这个观察者是否能在本次 dispatch 过程中 被调用，所以 redux 在注册时做了一个处理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// listenrs 浅复制，是一个防止 在某次dispatch过程中添加新的 观察者 的方法</span></span><br><span class="line"><span class="comment">// 只有在 listener副本 和 真实listener 指向同一个内存地址的数组时才会执行copy方法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ensureCanMutateNextListeners</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (nextListeners === currentListeners) &#123;</span><br><span class="line">    nextListeners = currentListeners.slice()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Store 内的listeners对象是一个数组，但是在其内部却维护了 <code>currentListeners</code> 和 <code>nextListeners</code> 两个listeners对象，</p>
+<ul>
+<li>currentListeners：本次 dispatch 中调用的 listners 数组</li>
+<li>nextListeners： 如果在 dispatch 调用listeners的过程中又注册了 观察者，那么这个观察者会注册到 nextListeners 数组中去，在下次dispatch的时候才会生效</li>
+</ul>
+<p>听着有点抽象，其实就是每次注册新的观察者的时候，都会确保 currentListeners 和 nextListeners 是指向不同内存地址的两个数组，然后把 新注册的观察者注册到 nextListeners 中去，然后再dispatch结束，逐一调用 listeners 数组时，再将这个 nextListeners 指向的数组重新赋值给 currentListeners(<code>currentListener = nextListener</code>)</p>
+<p>这么做就是为了避免，在某次 调用观察者的过程中，又注册或解绑了观察者，那么此时这个 观察者是否会被执行是不可预料的，这个机制就是为了保证 新注册或新解绑的观察者变动，在下次dispatch 的时候再体现出来</p>
+<p>看一下 subscribe函数（返回值为解绑函数）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">subscribe</span>(<span class="params">listener</span>) </span>&#123;</span><br><span class="line">   <span class="comment">// listener必须为函数</span></span><br><span class="line">   <span class="comment">// 在一次subscribe过程中，是不能进行注册的</span></span><br><span class="line">  	...</span><br><span class="line"></span><br><span class="line">   <span class="keyword">let</span> isSubscribed = <span class="literal">true</span> <span class="comment">// 标志位，标识当前listener被注册为一个观察者了</span></span><br><span class="line"></span><br><span class="line">   ensureCanMutateNextListeners()  <span class="comment">// 将currentListeners 浅复制到 nextListeners（保存了一个观察者副本）</span></span><br><span class="line">   nextListeners.push(listener) <span class="comment">// 将当前 listener 注册到 观察者副本中去</span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">unsubscribe</span>(<span class="params"></span>) </span>&#123; <span class="comment">// return 一个取消注册的方法</span></span><br><span class="line">     <span class="keyword">if</span> (!isSubscribed) &#123; <span class="comment">// 如果当前 listener 已经不是一个观察者了（可能会有多次解绑的情况），直接return</span></span><br><span class="line">       <span class="keyword">return</span></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (isDispatching) &#123; <span class="comment">// 如果当前正好处于一次 dispatch 的过程，是不允许解绑的</span></span><br><span class="line">       ...</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     isSubscribed = <span class="literal">false</span> <span class="comment">// 标志当前 listener 已经被解绑</span></span><br><span class="line"></span><br><span class="line">     ensureCanMutateNextListeners() <span class="comment">// 真正解绑之前 复制一份解绑前的 listeners 副本</span></span><br><span class="line">     <span class="keyword">const</span> index = nextListeners.indexOf(listener)</span><br><span class="line">     nextListeners.splice(index, <span class="number">1</span>) <span class="comment">// 在副本中删除当前 listener</span></span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="getState——返回应用-state状态树"><a href="#getState——返回应用-state状态树" class="headerlink" title="getState——返回应用 state状态树"></a>getState——返回应用 state状态树</h4><p>没什么好讲的，就是返回 currentStore，唯一需要注意的一点是，如果正好处于一次 dispatch的reducer执行 过程中，是不能调用这个方法的</p>
+<h4 id="replaceReducer——在创建应用store-之后替换-rootReducer"><a href="#replaceReducer——在创建应用store-之后替换-rootReducer" class="headerlink" title="replaceReducer——在创建应用store 之后替换 rootReducer"></a>replaceReducer——在创建应用store 之后替换 rootReducer</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">replaceReducer</span>(<span class="params">nextReducer</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> nextReducer !== <span class="string">'function'</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Expected the nextReducer to be a function.'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    currentReducer = nextReducer</span><br><span class="line">    <span class="comment">// 用旧的state树的某些数据 和一些其他的数据信息 构建新的state树</span></span><br><span class="line">    dispatch(&#123; <span class="attr">type</span>: ActionTypes.REPLACE &#125;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>replace之后要使用 当前的currentState + 新的rootReducer（nextReducer），来构建新的 state 树</p>
+<h4 id="dispatch——核心方法，派发action-通知观察者"><a href="#dispatch——核心方法，派发action-通知观察者" class="headerlink" title="dispatch——核心方法，派发action+通知观察者"></a>dispatch——核心方法，派发action+通知观察者</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * // dispatch 是触发改变 store 的唯一方法</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * // reducer 定义了根据 旧的store树和具体action，返回新的store 树的逻辑</span></span><br><span class="line"><span class="comment">   * 同时会触发所有的观察者</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * // 基本方法只支持 dispatch 一个对象，</span></span><br><span class="line"><span class="comment">   * 对于 Promise、Observable、thunk函数或者其他对象，需要使用 middleware 处理</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * @param &#123;Object&#125; action 代表改变的部分，对象</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * @returns &#123;Object&#125; 返回值为 dispatch 的action 对象</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * // 自定义中间件 需要包装 dispatch 方法来返回一些其他的东西</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">dispatch</span>(<span class="params">action</span>) </span>&#123;</span><br><span class="line">    ... 一堆检查</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      isDispatching = <span class="literal">true</span> <span class="comment">// 将派发状态位设置为 true</span></span><br><span class="line">      currentState = currentReducer(currentState, action) <span class="comment">// 用传入的reducer对store 状态树进行更新</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      isDispatching = <span class="literal">false</span> <span class="comment">// 不管更新是否成功都要把派发状态位 设置为 false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> listeners = (currentListeners = nextListeners) <span class="comment">// 将当前listeners监听数组设置为 操作过的副本listeners数组</span></span><br><span class="line">    <span class="comment">// 在dispatch 的时候才将更新的 listener 数组赋值给当前listener 数组</span></span><br><span class="line">    <span class="comment">// 循环过程中新注册的 观察者方法 不会影响本次循环（CurrentListener）</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; listeners.length; i++) &#123;</span><br><span class="line">      <span class="keyword">const</span> listener = listeners[i]</span><br><span class="line">      listener() <span class="comment">// notify 每个观察者方法</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> action <span class="comment">// 返回dispatch 的原 action</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，其实 <code>isDispatching</code> 字段代表的，是当前是否处于 reducer 执行过程中（而不是dispatch 过程中）</p>
+<h4 id="others"><a href="#others" class="headerlink" title="others"></a>others</h4><p>createStore 方法除了这些方法之外，也在函数体内部执行了一些代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">createStore</span>(<span class="params">reducer, preloadState, enhancer</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 略去一些检查参数类型以及个数的方法</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> enhancer !== <span class="string">'undefined'</span>) &#123;</span><br><span class="line">    ... <span class="comment">// enhancer 必须为函数</span></span><br><span class="line">    <span class="comment">// enhancer为增强函数（中间件）</span></span><br><span class="line">    <span class="comment">// 其实是 applyMiddlewares 的返回值函数</span></span><br><span class="line">    <span class="keyword">return</span> enhancer(createStore)(reducer, preloadedState)</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">let</span> currentReducer = reducer <span class="comment">// 当前 store 中的 reducer</span></span><br><span class="line">  <span class="keyword">let</span> currentState = preloadedState <span class="comment">// 当前 store 中存储的状态</span></span><br><span class="line">  <span class="keyword">let</span> currentListeners = [] <span class="comment">// 当前 store 中放置的 监听函数</span></span><br><span class="line">  <span class="keyword">let</span> nextListeners = currentListeners <span class="comment">// 下一次dispatch notifyListeners 时的监听函数</span></span><br><span class="line">  <span class="comment">// 注意，当我们新添加一个监听函数时，这个监听函数只会在下一次 dispatch 的时候生效</span></span><br><span class="line">  <span class="keyword">let</span> isDispatching = <span class="literal">false</span> <span class="comment">// 当前是否处于一次dispatch过程中</span></span><br><span class="line">  </span><br><span class="line">  ... <span class="comment">// 定义函数们</span></span><br><span class="line">  </span><br><span class="line">  dispatch(&#123; <span class="attr">type</span>: ActionTypes.INIT &#125;);</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    dispatch,</span><br><span class="line">    subscribe,</span><br><span class="line">    getState,</span><br><span class="line">    replaceReducer,</span><br><span class="line">    [$$observable]: observable <span class="comment">// [$$observable] 是什么意思</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>createStore 可以 传 reducer+enhancer 或 reducer+preloadState+enhancer</p>
+<h5 id="初始化的过程"><a href="#初始化的过程" class="headerlink" title="初始化的过程"></a>初始化的过程</h5><p>另外，可以看到在return之前，派发了一个 init 的action，也就是说，在createStore 的时候，同时会初始化 initialState，刚开始的 currentState 为 空，那么在dispatch 调用 reducer 时，传入的 state 为空，而action为redux内置的redux</p>
+<p>在使用 reducer 时</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> initialState = &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">todos</span>(<span class="params">state = initialState, action</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">switch</span> (action) &#123;</span><br><span class="line">      ...</span><br><span class="line">      <span class="keyword">default</span>: </span><br><span class="line">      	<span class="keyword">return</span> state;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在我们自定义的 reducer 中当然不会匹配到 任何action，所以会返回 defaultState，也就是 initialState</p>
+<h3 id="combineReducer——合并-reducer-对象"><a href="#combineReducer——合并-reducer-对象" class="headerlink" title="combineReducer——合并 reducer 对象"></a>combineReducer——合并 reducer 对象</h3><p>传入一个</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  key1: reducer1,</span><br><span class="line">  key2: reducer2,</span><br><span class="line">  ...</span><br><span class="line">  keyN: reducerN</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对象</p>
+<p>返回一个 函数，这个函数接受一个 state 和 action，遍历这个 rootReducer，执行其中的每个 reducer 方法并更新 对应的state，具体代码解读见 <a href="https://github.com/aqqzzz/redux/blob/master/src/combineReducers.js" target="_blank" rel="noopener">redux-combineReducer</a></p>
+<h3 id="bindActionCreators"><a href="#bindActionCreators" class="headerlink" title="bindActionCreators"></a>bindActionCreators</h3><p>生成一个 键值为函数的对象，调用对应的函数时触发 dispatch 函数</p>
+<h3 id="compose——组合传入的函数"><a href="#compose——组合传入的函数" class="headerlink" title="compose——组合传入的函数"></a>compose——组合传入的函数</h3><p>组合传入的一系列函数，中间件时会用到</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> funcs.reduce(<span class="function">(<span class="params">a, b</span>) =&gt;</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> a(b(...args)))</span><br></pre></td></tr></table></figure>
+
+<p>只有最后一个函数可以接受多个参数</p>
+<p>返回值为： <code>(...args) =&gt; f(g(h(...args))).</code> 的一个函数</p>
+<h3 id="applyMiddlewares——增强-dispatch"><a href="#applyMiddlewares——增强-dispatch" class="headerlink" title="applyMiddlewares——增强 dispatch"></a>applyMiddlewares——增强 dispatch</h3><p>在dispatch之前为 dispatch添加附加功能，返回 Store对象，并且用包装后的dispatch替代原来的dispatch</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">applyMiddleware</span>(<span class="params">...middlewares</span>) </span>&#123;</span><br><span class="line"> 	<span class="comment">// 返回值为一个多层嵌套的函数</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">createStore</span> =&gt;</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> store = createStore(...args)</span><br><span class="line">    <span class="keyword">let</span> dispatch = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(</span><br><span class="line">        <span class="string">'Dispatching while constructing your middleware is not allowed. '</span> +</span><br><span class="line">          <span class="string">'Other middleware would not be applied to this dispatch.'</span></span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> middlewareAPI = &#123;</span><br><span class="line">      getState: store.getState,</span><br><span class="line">      dispatch: <span class="function">(<span class="params">...args</span>) =&gt;</span> dispatch(...args) <span class="comment">// 这里为什么要用匿名函数包裹返回 dispatch，而不是直接用我们定义的dispatch</span></span><br><span class="line">      <span class="comment">/**</span></span><br><span class="line"><span class="comment">       * js函数传参是按值传递的，如果我们直接返回 用自定义的dispatch 去调用的话，middleware(API)执行时的dispatch是我们传入dispatch时</span></span><br><span class="line"><span class="comment">       * 那个throw Error 的内存地址，</span></span><br><span class="line"><span class="comment">       * 而我们之后会对这个dispatch进行增强，并重新给它赋值，这时js会在堆内存中分配一块新的内存来存放这个新的dispatch 函数实体，</span></span><br><span class="line"><span class="comment">       * 并把栈中dispatch变量的值修改为这个堆内存地址，</span></span><br><span class="line"><span class="comment">       * 这个时候，当我们对middlerware传入 action进行调用时，它对应的dispatch 是我们更新前的 dispatch 函数实体</span></span><br><span class="line"><span class="comment">       * 匿名函数的作用就是，把这个传递的值变为 这个匿名函数的内存地址，而当它被真正调用的时候再去调用真正的dispatch</span></span><br><span class="line"><span class="comment">       * 其实就是把dispatch 包装了一层，在真正 dispatch action 的时候再去对应这个dispatch 真正的函数体（也就是增强之后的函数实体）</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> chain = middlewares.map(<span class="function"><span class="params">middleware</span> =&gt;</span> middleware(middlewareAPI))</span><br><span class="line">    dispatch = compose(...chain)(store.dispatch) </span><br><span class="line">    <span class="comment">// 这里的compose其实就是一系列的增强函数，传入store.dispatch是最终触发compose执行的参数</span></span><br><span class="line">    <span class="comment">// f(g(h(store.dispatch))) 相当于 next(g(h(store.dispatch)))</span></span><br><span class="line">    <span class="comment">// 因为我们需要返回一个可以替换原先dispatch 的函数，所以这个返回值其实也应该是一个可以接受 一个action作为参数 的函数</span></span><br><span class="line">    <span class="comment">// 只有在真正传入action 的时候，dispatch 才会被调用</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      ...store,</span><br><span class="line">      dispatch</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由此的话我们可以推出中间件的写法：因为中间件是要多个首尾相连的，需要一层层的“加工”，所以要有个next方法来独立一层确保串联执行，另外dispatch增强后也是个dispatch方法，也要接收action参数，所以最后一层肯定是action。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// redux-thunk 源码</span></span><br><span class="line"><span class="comment">// 中间件代码真正执行的时机是 传入 action之后，所以此时需要保证 dispatch 为更新过后的函数地址</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createThunkMiddleware</span>(<span class="params">extraArgument</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">&#123;getState, dispatch&#125;</span>) =&gt;</span> <span class="function"><span class="params">next</span> =&gt;</span> <span class="function"><span class="params">action</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">typeof</span> action === <span class="string">'function'</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> action(dispatch, getState, extraArgument)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> next(action)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>理解：传入action时真正触发 dispatch 执行，若action是一个函数，则调用这个函数并将增强后的dispatch传进去（由applimiddlerware源码可知，dispatch是函数内声明的一个自定义变量，而最后增强store.dispatch时我们又将dispatch重新赋值，所以这里在真正传入action执行的时候，dispatch是增强后的dispatch）</p>
+<p>若action不是一个函数，则调用 next(action)，就是一层层调用 next，其实就是增强dispatch之后最后调用 store.dispatch</p>
+<p>redux-thunk 的作用：普通的dispatch只能dispatch一个对象，redux-thunk可以让我们dispatch 一个函数，这个函数的参数是（dispatch, getState, payload），dispatch函数之后，我们就可以在这个函数里进行异步处理或调用接口</p>
+<p>thunk 的含义就是 延迟执行，这里其实是延迟了真正的dispatch，只有在dispatch action 的时候才会触发reducer更新，所以这里实际上是延迟了 真正的reducer更新 </p>
+<h4 id="Q1：middleware为什么要嵌套函数？为何不在一层函数中传递三个参数，而要在一层函数中传递一个参数，一共传递三层？"><a href="#Q1：middleware为什么要嵌套函数？为何不在一层函数中传递三个参数，而要在一层函数中传递一个参数，一共传递三层？" class="headerlink" title="Q1：middleware为什么要嵌套函数？为何不在一层函数中传递三个参数，而要在一层函数中传递一个参数，一共传递三层？"></a>Q1：middleware为什么要嵌套函数？为何不在一层函数中传递三个参数，而要在一层函数中传递一个参数，一共传递三层？</h4><p>因为中间件是要多个首尾相连的，对next进行一层层的“加工”，所以next必须独立一层。那么Store和action呢？Store的话，我们要在中间件顶层放上Store，因为我们要用Store的dispatch和getState两个方法。action的话，是因为我们封装了这么多层，其实就是为了作出更高级的dispatch方法，是dispatch，就得接受action这个参数。</p>
+<p>函数柯里化，提前传入一些参数，构造好最后执行的函数，最后就可以只传入action进行调用了，也是对dispatch 的一个封装和增强</p>
+<h4 id="Q2：middlewareAPI中的dispatch为什么要用匿名函数包裹呢？"><a href="#Q2：middlewareAPI中的dispatch为什么要用匿名函数包裹呢？" class="headerlink" title="Q2：middlewareAPI中的dispatch为什么要用匿名函数包裹呢？"></a>Q2：middlewareAPI中的dispatch为什么要用匿名函数包裹呢？</h4><p>我们用applyMiddleware是为了改造dispatch的，所以applyMiddleware执行完后，dispatch是变化了的，而middlewareAPI是applyMiddleware执行中分发到各个middleware，所以必须用匿名函数包裹dispatch，这样只要dispatch更新了，middlewareAPI中的dispatch应用也会发生变化。</p>
+<p>也就是说，匿名函数包裹之后，只有在真正执行dispatch的时候（传入action之后），系统才会去查找其真正指向的函数进行调用</p>
+<p>如果不包裹的话，传入middleware中的 dispatch 其实是增强前的dispatch 地址（结合函数按值传参的特性理解）可以同时查看源码中我的注释</p>
+<h4 id="Q3-在middleware里调用dispatch跟调用next一样吗？"><a href="#Q3-在middleware里调用dispatch跟调用next一样吗？" class="headerlink" title="Q3: 在middleware里调用dispatch跟调用next一样吗？"></a>Q3: 在middleware里调用dispatch跟调用next一样吗？</h4><p>因为我们的dispatch是用匿名函数包裹，所以在中间件里执行dispatch跟其它地方没有任何差别，而执行next相当于调用下个中间件。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>单纯redux 的使用流程为：</p>
+<ol>
+<li>combineReducer</li>
+<li>applyMiddlewares( …midlewares )</li>
+<li>createStore( rootReducer, preloadState, applyMiddlewares(…midlewares))</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://tech.meituan.com/2017/07/14/redux-design-code.html" target="_blank" rel="noopener">Redux从设计到源码</a></p>
+<p><a href="https://github.com/aqqzzz/redux/tree/master/src" target="_blank" rel="noopener">redux源码解读-git</a></p>
+<h3 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h3><ul>
+<li>react-redux</li>
+<li>react-router</li>
+<li>函数柯里化</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/React/" rel="tag"># React</a>
+          
+            <a href="/tags/Redux/" rel="tag"># Redux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/17/es6之类与类继承/" rel="next" title="es6之类与类继承">
+                <i class="fa fa-chevron-left"></i> es6之类与类继承
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="张耳朵">
+            
+              <p class="site-author-name" itemprop="name">张耳朵</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redux-简介"><span class="nav-number">1.</span> <span class="nav-text">Redux 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#入口文件——index-js"><span class="nav-number">2.</span> <span class="nav-text">入口文件——index.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#createStore——创建应用的-store-对象"><span class="nav-number">3.</span> <span class="nav-text">createStore——创建应用的 store 对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#subscribe"><span class="nav-number">3.1.</span> <span class="nav-text">subscribe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getState——返回应用-state状态树"><span class="nav-number">3.2.</span> <span class="nav-text">getState——返回应用 state状态树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#replaceReducer——在创建应用store-之后替换-rootReducer"><span class="nav-number">3.3.</span> <span class="nav-text">replaceReducer——在创建应用store 之后替换 rootReducer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch——核心方法，派发action-通知观察者"><span class="nav-number">3.4.</span> <span class="nav-text">dispatch——核心方法，派发action+通知观察者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#others"><span class="nav-number">3.5.</span> <span class="nav-text">others</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#初始化的过程"><span class="nav-number">3.5.1.</span> <span class="nav-text">初始化的过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#combineReducer——合并-reducer-对象"><span class="nav-number">4.</span> <span class="nav-text">combineReducer——合并 reducer 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bindActionCreators"><span class="nav-number">5.</span> <span class="nav-text">bindActionCreators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compose——组合传入的函数"><span class="nav-number">6.</span> <span class="nav-text">compose——组合传入的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#applyMiddlewares——增强-dispatch"><span class="nav-number">7.</span> <span class="nav-text">applyMiddlewares——增强 dispatch</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Q1：middleware为什么要嵌套函数？为何不在一层函数中传递三个参数，而要在一层函数中传递一个参数，一共传递三层？"><span class="nav-number">7.1.</span> <span class="nav-text">Q1：middleware为什么要嵌套函数？为何不在一层函数中传递三个参数，而要在一层函数中传递一个参数，一共传递三层？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Q2：middlewareAPI中的dispatch为什么要用匿名函数包裹呢？"><span class="nav-number">7.2.</span> <span class="nav-text">Q2：middlewareAPI中的dispatch为什么要用匿名函数包裹呢？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Q3-在middleware里调用dispatch跟调用next一样吗？"><span class="nav-number">7.3.</span> <span class="nav-text">Q3: 在middleware里调用dispatch跟调用next一样吗？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TODO"><span class="nav-number">10.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张耳朵</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
