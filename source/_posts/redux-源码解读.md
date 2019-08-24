@@ -390,7 +390,7 @@ thunk 的含义就是 延迟执行，这里其实是延迟了真正的dispatch�
 
 [Redux从设计到源码](https://tech.meituan.com/2017/07/14/redux-design-code.html)
 
-
+[redux源码解读-git](https://github.com/aqqzzz/redux/tree/master/src)
 
 ### TODO
 
