@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g6b08rfm9yj21aq0jqdli.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g6b0sl1ywqj20as0digmm.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1g6b16bdue1j20ng08mgn1.jpg">
-<meta property="og:updated_time" content="2019-08-24T14:38:25.670Z">
+<meta property="og:updated_time" content="2019-08-24T14:42:53.088Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redux 源码解读">
 <meta name="twitter:description" content="这周也不知道在忙什么，愧疚 leader说之前有个面试的同学每天写一篇总结，结果啥都问不倒，那我也努力一下，先来每两天一篇，努力尝试自己产出。 今天来读一下 Redux 的源码，其实之前也读过，算是复习 Redux 简介 目的：使得状态的变化变得可预测 三个特性：  单一数据源：整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 s">
@@ -445,9 +445,11 @@
 <h4 id="Q3-在middleware里调用dispatch跟调用next一样吗？"><a href="#Q3-在middleware里调用dispatch跟调用next一样吗？" class="headerlink" title="Q3: 在middleware里调用dispatch跟调用next一样吗？"></a>Q3: 在middleware里调用dispatch跟调用next一样吗？</h4><p>因为我们的dispatch是用匿名函数包裹，所以在中间件里执行dispatch跟其它地方没有任何差别，而执行next相当于调用下个中间件。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>单纯redux 的使用流程为：</p>
 <ol>
-<li>combineReducer</li>
-<li>applyMiddlewares( …midlewares )</li>
+<li>combineReducer——合并 reducer</li>
+<li>applyMiddlewares( …midlewares )——增强dispatch</li>
 <li>createStore( rootReducer, preloadState, applyMiddlewares(…midlewares))</li>
+<li>store.subscribe——注册监听方法，当 dispatch 时触发</li>
+<li>dispatch(action)——触发reducer更新state树并依次调用对应的listeners监听方法</li>
 </ol>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://tech.meituan.com/2017/07/14/redux-design-code.html" target="_blank" rel="noopener">Redux从设计到源码</a></p>
 <p><a href="https://github.com/aqqzzz/redux/tree/master/src" target="_blank" rel="noopener">redux源码解读-git</a></p>
