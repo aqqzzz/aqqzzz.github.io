@@ -79,18 +79,21 @@
 
 
 
-<meta name="description" content="hexo部署流程1234567891011# 清理部署文件hexo clean# 生成静态文件hexo g# 本地起服务查看博客hexo s# 部署到远程服务器hexo d  hexo d 报错今天在 hexo d 的时候突然报错">
+<meta name="description" content="hexo部署流程1234567891011# 清理部署文件hexo clean# 生成静态文件hexo g# 本地起服务查看博客hexo s# 部署到远程服务器hexo d  hexo d 报错今天在 hexo d 的时候突然报错  在网上查了一下，大部分提供的解决方案是在博客根目录中的 _config.yml 文件中，将 deploy 部分修改为以下： 1234deploy:  type: gi">
 <meta name="keywords" content="hexo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hexo d报错Spawn failed">
 <meta property="og:url" content="http://aqqzzz.github.io/2020/04/19/hexo-d报错Spawn-failed/index.html">
 <meta property="og:site_name" content="张耳朵的博客">
-<meta property="og:description" content="hexo部署流程1234567891011# 清理部署文件hexo clean# 生成静态文件hexo g# 本地起服务查看博客hexo s# 部署到远程服务器hexo d  hexo d 报错今天在 hexo d 的时候突然报错">
+<meta property="og:description" content="hexo部署流程1234567891011# 清理部署文件hexo clean# 生成静态文件hexo g# 本地起服务查看博客hexo s# 部署到远程服务器hexo d  hexo d 报错今天在 hexo d 的时候突然报错  在网上查了一下，大部分提供的解决方案是在博客根目录中的 _config.yml 文件中，将 deploy 部分修改为以下： 1234deploy:  type: gi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-19T10:32:59.835Z">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1gdz9c1ngqmj20vg0ii7wh.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1gdz9gebhmjj20vi0dokhx.jpg">
+<meta property="og:updated_time" content="2020-04-19T10:52:27.754Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo d报错Spawn failed">
-<meta name="twitter:description" content="hexo部署流程1234567891011# 清理部署文件hexo clean# 生成静态文件hexo g# 本地起服务查看博客hexo s# 部署到远程服务器hexo d  hexo d 报错今天在 hexo d 的时候突然报错">
+<meta name="twitter:description" content="hexo部署流程1234567891011# 清理部署文件hexo clean# 生成静态文件hexo g# 本地起服务查看博客hexo s# 部署到远程服务器hexo d  hexo d 报错今天在 hexo d 的时候突然报错  在网上查了一下，大部分提供的解决方案是在博客根目录中的 _config.yml 文件中，将 deploy 部分修改为以下： 1234deploy:  type: gi">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/8ac7964fly1gdz9c1ngqmj20vg0ii7wh.jpg">
 
 
 
@@ -345,6 +348,21 @@
         <h3 id="hexo部署流程"><a href="#hexo部署流程" class="headerlink" title="hexo部署流程"></a>hexo部署流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 清理部署文件</span><br><span class="line">hexo clean</span><br><span class="line"></span><br><span class="line"># 生成静态文件</span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line"># 本地起服务查看博客</span><br><span class="line">hexo s</span><br><span class="line"></span><br><span class="line"># 部署到远程服务器</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
 
 <h3 id="hexo-d-报错"><a href="#hexo-d-报错" class="headerlink" title="hexo d 报错"></a>hexo d 报错</h3><p>今天在 hexo d 的时候突然报错</p>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1gdz9c1ngqmj20vg0ii7wh.jpg" alt="image.png"></p>
+<p>在网上查了一下，大部分提供的解决方案是在博客根目录中的 _config.yml 文件中，将 deploy 部分修改为以下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:aqqzzz/aqqzzz.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+
+<p>网上的大部分情况，在这里配置之后应该就可以了，但我修改之后再执行 hexo d 时，还是会报错，报错信息如下图</p>
+<p><img src="http://ww1.sinaimg.cn/large/8ac7964fly1gdz9gebhmjj20vi0dokhx.jpg" alt="image.png"></p>
+<p>还在报 Spawn failed 的错误，但是发现上面还有连接失败的错误，无法连接到git仓库</p>
+<p>因此使用  <code>ssh -v git@github.com</code> 来查看 git 的ssh连接，如果连接成功，会返回用户名，我在调用时则返回了 permission denied 的错误，发现可能是因为ssh密钥连接的问题，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -al ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>其中 id_rsa.pub 则为存储公钥的文件，查看发现当前存储的密钥还是之前实习的时候的邮箱生成的密钥，可能当时在远程的时候配置了公司的ssh</p>
+<p>接下来则具体参考如下链接中的流程进行配置：<a href="https://help.github.com/cn/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent" target="_blank" rel="noopener">https://help.github.com/cn/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent</a></p>
+<p>具体为：生成新ssh密钥——将ssh密钥添加到 ssh-agent</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>在这次生成新ssh密钥时，把旧的id_rsa.pub文件中的公钥文件覆盖了，如果之后需要在别的项目中使用别的git账号，需要重新走流程生成新的 SSH key</p>
+<p>Mac 配置多个git账号的方式：<a href="https://www.jianshu.com/p/698f82e72415" target="_blank" rel="noopener">https://www.jianshu.com/p/698f82e72415</a></p>
 
       
     </div>
@@ -517,7 +535,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo部署流程"><span class="nav-number">1.</span> <span class="nav-text">hexo部署流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo-d-报错"><span class="nav-number">2.</span> <span class="nav-text">hexo d 报错</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo部署流程"><span class="nav-number">1.</span> <span class="nav-text">hexo部署流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo-d-报错"><span class="nav-number">2.</span> <span class="nav-text">hexo d 报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li></ol></div>
             
 
           </div>
