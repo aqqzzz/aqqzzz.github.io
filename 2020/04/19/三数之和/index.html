@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="算法,LeetCode,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="两数之和给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍。 示例: 给定 nums = [2, 7, 11, 15], target = 9，因为 nums[0] + nums[1] = 2 + 7 = 9，所以返回 [0, 1] 最简单的算法就是两层循">
+<meta name="keywords" content="算法,LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="三数之和">
+<meta property="og:url" content="http://aqqzzz.github.io/2020/04/19/三数之和/index.html">
+<meta property="og:site_name" content="张耳朵的博客">
+<meta property="og:description" content="两数之和给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍。 示例: 给定 nums = [2, 7, 11, 15], target = 9，因为 nums[0] + nums[1] = 2 + 7 = 9，所以返回 [0, 1] 最简单的算法就是两层循">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-04-19T09:27:31.475Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="三数之和">
+<meta name="twitter:description" content="两数之和给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍。 示例: 给定 nums = [2, 7, 11, 15], target = 9，因为 nums[0] + nums[1] = 2 + 7 = 9，所以返回 [0, 1] 最简单的算法就是两层循">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://aqqzzz.github.io/2020/04/19/三数之和/">
+
+
+
+
+
+  <title>三数之和 | 张耳朵的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">张耳朵的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://aqqzzz.github.io/2020/04/19/三数之和/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张耳朵">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张耳朵的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">三数之和</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-19T17:26:20+08:00">
+                2020-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="两数之和"><a href="#两数之和" class="headerlink" title="两数之和"></a>两数之和</h2><p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标</p>
+<p>你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍。</p>
+<p>示例:</p>
+<p>给定 nums = [2, 7, 11, 15], target = 9，因为 nums[0] + nums[1] = 2 + 7 = 9，所以返回 [0, 1]</p>
+<p>最简单的算法就是两层循环，外层循环循环第一个整数，内层循环则在后面的数字中查找 target - num1 的结果，时间复杂度其实还是O(n^2)</p>
+<h3 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h3><p>题目需求已经说清楚，每种输入只会对应一个答案，也就是说，我们不需要考虑数组中出现重复数字的情况，也不需要考虑一个数组中有多种组合的情况，因此，我们可以将【下标-值】的数组转换为对应的【值-下标】数组（哈希表）</p>
+<p>例如对于示例输入[2, 7, 11, 15]中的第一项2来说，与target 9 的差值为7，我们可以将其放入数组temp中，将temp[2]置为0</p>
+<p>我们可以将数组中的每个数字都进行上述转换，但是我们可以发现，我们并不是需要把所有数字都转换完毕之后才能找到结果，对于示例输入来说，我们循环到第二位数字7时，就已经找到了目标数值对</p>
+<p>因此，这个过程很像是找朋友的过程，当有人来找朋友时，我们首先在登记簿中查找是否已经有需要这位朋友的人来过，如果找到了，则直接将登记者的信息返回，若没有找到，那么我们会把这个人的信息，以及他自己的下标进行登记，供后面的用户查找</p>
+<p>具体代码实现如下图所示</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> twoSum = <span class="function"><span class="keyword">function</span>(<span class="params">nums, target</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 登记簿</span></span><br><span class="line">    <span class="keyword">const</span> temp = []</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">const</span> num = nums[i];</span><br><span class="line">        <span class="keyword">const</span> remainNum = target - num;</span><br><span class="line">      	<span class="comment">// 查找登记簿中是否有该需求数字</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">typeof</span> temp[remainNum] !== <span class="string">'undefined'</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> [temp[remainNum], i]</span><br><span class="line">        &#125;</span><br><span class="line">      	<span class="comment">// 没有找到的话则将当前数字的信息在需求簿中登记</span></span><br><span class="line">        temp[num] = i</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="题目进阶"><a href="#题目进阶" class="headerlink" title="题目进阶"></a>题目进阶</h3><p>这个题目中明确规定了最后只会有一组结果，那么我们如果把这个限制条件改掉，我们所要查找的是数组中所有符合和为某个值的数值组合，题目修改为如下</p>
+<p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出所有和为目标值的整数数组，每个数字可以被重复使用，返回的数组中不能有重复数组</p>
+<p>示例:</p>
+<p>给定 nums = [2, 7, -2, 11], target = 9，因为 nums[0] + nums[1] = 2 + 7 = 9，nums[2] + nums[3] = -2 + 11 = 9,所以返回 [[2, 7], [-2, 11]]</p>
+<p>解题思路：</p>
+<p>将数组从小到大进行排序，然后应用双指针的思想，分别从数组开头和数组末尾对数组进行遍历循环，查找指针所指两数之和为目标值时的数字组合。</p>
+<p>其中一个重要的部分是如何把其中重复的部分过滤掉，要么在遍历之前过滤，要么在全部遍历结束之后过滤</p>
+<ul>
+<li>遍历前过滤：在指针移动时直接跳过相同的数字</li>
+<li>遍历后过滤：找到所有数字组合后对最后结果进行过滤</li>
+</ul>
+<p>很明显，遍历前过滤的方式更加节省时间和空间复杂度</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> j = i + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">let</span> k = nums.length - <span class="number">1</span>;</span><br><span class="line"><span class="keyword">while</span> (j &lt; k) &#123;</span><br><span class="line">  <span class="comment">// 因为是从小到大排列，如果前一个数字就比目标数字target更大，其和不可能等于target，</span></span><br><span class="line">  <span class="comment">// 而之后的循环中，j只会越来越大，其和不可能为target，因此不会再存在和为target的情况</span></span><br><span class="line">  <span class="comment">// 提前判断以减少循环次数</span></span><br><span class="line">	<span class="keyword">if</span> (nums[j] &gt; target) &#123;</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">const</span> curSum = nums[j] + nums[k]</span><br><span class="line">  <span class="comment">// 当两数之和为target时，将数值对推入结果数组</span></span><br><span class="line">  <span class="keyword">if</span> (curSum === target) &#123;</span><br><span class="line">    result.push([nums[j], nums[k]])</span><br><span class="line">		<span class="comment">// 跳过j、k之间所有重复的数字</span></span><br><span class="line">    <span class="keyword">while</span> (j &lt; k &amp;&amp; nums[j] === nums[j + <span class="number">1</span>]) j++</span><br><span class="line">    <span class="keyword">while</span> (j &lt; k &amp;&amp; nums[k] === nums[k - <span class="number">1</span>]) k--</span><br><span class="line">    j++, k--</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (curSum &gt; target) &#123;</span><br><span class="line">    <span class="comment">// 若两数之和大于target，则将较大数字的指针前移，并跳过所有重复数组</span></span><br><span class="line">  	<span class="keyword">while</span> (j &lt; k &amp;&amp; nums[k] === nums[k - <span class="number">1</span>]) k--</span><br><span class="line">    k--</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 若两数之和小于target，则将较小数字的指针后移，并跳过所有重复数组</span></span><br><span class="line">    <span class="keyword">while</span> (j &lt; k &amp;&amp; nums[j] === nums[j + <span class="number">1</span>]) j++</span><br><span class="line">    j++</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三数之和"><a href="#三数之和" class="headerlink" title="三数之和"></a>三数之和</h2><p>上述算法可以很容易地扩展到三数之和的算法，题面如下：</p>
+<p>给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。</p>
+<p>注意：答案中不可以包含重复的三元组。</p>
+<p>示例：</p>
+<p>给定数组 nums = [-1, 0, 1, 2, -1, -4]，</p>
+<p>满足要求的三元组集合为：<br>[<br>  [-1, 0, 1],<br>  [-1, -1, 2]<br>]</p>
+<p>解题思路：</p>
+<p>我们首先对输入数组进行排序，之后对该数组进行遍历，在每次遍历中，target就是当前数字的相反数，三数之和转换为两数之和的问题，我们只需要在当前指针之后的数组中查找和为target的数值对。最外层一次遍历结束之后，我们即可找到所有符合条件的三元组集合。</p>
+<p>这其中，我们也需要过滤重复数组，对于最外层数据而言，因为我们已经排过序了，每次内层循环都能找到所有与当前数值和为0的二元组，因此，如果在最外层发现了重复数据，我们可以直接跳过这个数据，减少不必要的重复</p>
+<p>具体代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param &#123;number[]&#125; nums</span></span><br><span class="line"><span class="comment"> * @return &#123;number[][]&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> threeSum = <span class="function"><span class="keyword">function</span>(<span class="params">nums</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> result = [];</span><br><span class="line">    <span class="comment">// 数组排序</span></span><br><span class="line">    nums.sort(<span class="function">(<span class="params">a, b</span>) =&gt;</span> a - b);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; nums.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">      	<span class="comment">// 最外层循环，并声明之后两数之和target</span></span><br><span class="line">        <span class="keyword">const</span> target = -nums[i];</span><br><span class="line">      	<span class="comment">// 若当前数字nums[i]大于0，那么之后的数据中不可能存在二元组使得三数之和为0</span></span><br><span class="line">        <span class="keyword">if</span> (target &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">      	<span class="comment">// 若当前数字和前一个数字相同，那么直接跳过本次循环</span></span><br><span class="line">        <span class="keyword">if</span> (nums[i] === nums[i<span class="number">-1</span>]) &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">      	<span class="comment">// 以下为查找两数之和为target的过程，应用双指针思想进行查找</span></span><br><span class="line">        <span class="keyword">let</span> j = i + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> k = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (j &lt; k) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] * nums[k] &gt; <span class="number">0</span> || nums[j] &gt; target) &#123;</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">const</span> curSum = nums[j] + nums[k]</span><br><span class="line">            <span class="keyword">if</span> (curSum === target) &#123;</span><br><span class="line">                result.push([nums[i], nums[j], nums[k]])</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">while</span> (j &lt; k &amp;&amp; nums[j] === nums[j + <span class="number">1</span>]) j++</span><br><span class="line">                <span class="keyword">while</span> (j &lt; k &amp;&amp; nums[k] === nums[k - <span class="number">1</span>]) k--</span><br><span class="line">                j++, k--</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (curSum &gt; target) &#123;</span><br><span class="line">                <span class="keyword">while</span> (j &lt; k &amp;&amp; nums[k] === nums[k - <span class="number">1</span>]) k--</span><br><span class="line">                k--</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">while</span> (j &lt; k &amp;&amp; nums[j] === nums[j + <span class="number">1</span>]) j++</span><br><span class="line">                j++</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/31/啊火星我来辽/" rel="next" title="啊火星我来辽">
+                <i class="fa fa-chevron-left"></i> 啊火星我来辽
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="张耳朵">
+            
+              <p class="site-author-name" itemprop="name">张耳朵</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#两数之和"><span class="nav-number">1.</span> <span class="nav-text">两数之和</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#改进"><span class="nav-number">1.1.</span> <span class="nav-text">改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目进阶"><span class="nav-number">1.2.</span> <span class="nav-text">题目进阶</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三数之和"><span class="nav-number">2.</span> <span class="nav-text">三数之和</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张耳朵</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
